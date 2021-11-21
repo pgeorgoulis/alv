@@ -1,0 +1,42 @@
+
+'''
+@client.event
+async def on_ready():
+	for guild in client.guilds:
+		if guild.name == GUILD:
+			break
+
+	print(
+	f'{client.user} is connecter to the following guild:\n'
+	f'{guild.name}(id: {guild.id})'
+	)
+
+	members = '\n - '.join([member.name for member in guild.members])
+	print(f'Guild Members:\n - {members}')
+
+@client.event
+async def on_message(message):
+	#If the message is sent by a user(not a bot)
+	if message.author == client.user:
+		return
+
+	if message.content == 'hello there':
+		response = 'General Kenobi'
+		await message.channel.send(response)
+	elif message.content == 'raise-exception':
+		raise discord.DiscordException
+
+client.run(TOKEN)
+
+
+@client.event
+async def on_error(event, *args, **kwargs):
+	with open('err.log', 'a') as f:
+		if event == 'on_message':
+			f.write(f'Unhandled message: {args[0]}\n')
+		else:
+			raise
+
+
+#discord.utils.find() to improve simplicity (uses lambda)
+'''
