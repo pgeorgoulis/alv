@@ -2,6 +2,7 @@
 # bot.py
 import os
 import discord
+import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -26,19 +27,24 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
+@client.command()
+async def set_date(ctx):
+    await ctx.send('Enter the available days: ')
 
-@client.command(name='set_date')
-async def command(ctx):
-	global times_used
-	await ctx.send(f"enter the available dates")
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel
 
-	def check(msg):
-		return msg.author == ctx.author and msg.channel == ctx.channel
+    try:
+        msg = await client.wait_for("message", check=check, timeout=30)
+        await ctx.send(f'You said {msg.content}')
+    except asyncio.TimeoutError:
+        await ctx.send("Sorry, you didn't reply in time")
 
-	msg = await client.wait_for("message", check=check)
-	ctx.send(msg.content.lower())
+@client.command()
+async def embed(ctx):
+    embed = discord.Embed(title="Next session:", url="", description="kalispera", color=0x00c7e6)
+    await ctx.send(embed=embed)
 
-	times_used = times_used + 1
 #client.wati_for() to read user inpput raise timeout error
 #context.message to fetch the message of the commands
 #context.author to fetch the user that called the commands
