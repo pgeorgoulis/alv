@@ -12,22 +12,28 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 client = commands.Bot(command_prefix='!')
+#Global variables for the file name and size
+file_name = "dates.csv"
+
+
+def count_lines():
+    with open(file_name, 'r') as file:
+        count =0
+        for line in file:
+            if line != "\n":
+                count += 1
+    return count
+
 
 #write the dates to a csv file
 def writeFile(author, content):
     lines = list()
-    file_name = "dates.csv"
-    file_size = os.path.getsize(file_name)
     found_flag=False
+
     with open(file_name, 'r', newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
-        #The first char of the file
 
-        """if file_size == 0:
-            print("empty")
-            content.insert(0, author)
-            lines.append(content)"""
-        #Load the whole file in memory
+        #Load the whole file in lines list
         for row in reader:
             name = row[0]
             print(name)
@@ -41,7 +47,7 @@ def writeFile(author, content):
                 lines.append(row)
                 found_flag = True
                 print("found", author)
-        
+
         #If the user does not exist already
         if not found_flag:
             #then add the new user
@@ -49,11 +55,45 @@ def writeFile(author, content):
             content.insert(0, author)
             lines.append(content)
 
+    #Rewrite the new file
     with open(file_name, 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(lines)
 
     return
+
+def intersection(lst1, lst2):
+    lst3 = [value for value in lst1 if value in lst2]
+    return lst3
+
+def calc_date():
+    common_days = list()
+    line_count = count_lines()
+    if line_count <= 1:
+        print("Error: Not enough entries")
+        return
+
+    with open(file_name, 'r', newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+
+        #Get the first line
+        first_row = next(reader)
+        #remove the first element which is the name
+        first_row.pop(0)
+        #first_days = set(row)
+
+        #Get the second line
+        second_row = next(reader)
+        second_row.pop(0)
+        #Common elements of the first two
+        common_days = intersection(first_row, second_row)
+
+        for i in range(line_count-2):
+            next_row = next(reader)
+            next_row.pop(0)
+            common = intersection(common_days, next_row)
+
+    return common
 
 
 #Events
@@ -90,6 +130,12 @@ async def add_date(ctx):
 
     except asyncio.TimeoutError:
         await ctx.send("Sorry, you didn't reply in time")
+
+
+@client.command()
+async def common(ctx):
+
+    await ctx.send(calc_date())
 
 
 @client.command()
