@@ -4,6 +4,7 @@ import os
 import csv
 import discord
 import asyncio
+import re
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -15,6 +16,19 @@ client = commands.Bot(command_prefix='!')
 #Global variables for the file name and size
 file_name = "dates.csv"
 
+#Get a list convert to string, rewrite it to a specific format to filter out user retardedness
+def format_input(list):
+    print(f'The temp list is:{list}')
+    temp_string = ' '.join(str(elem) for elem in list)
+    print(f'The temp string is:{temp_string}')
+
+    formated_input = temp_string.lower().replace(" ", "")
+    print(formated_input)
+
+    pattern='(([1-9]|[0-3][0-9])([(]([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9]-([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9][)]),?)+'
+    result = re.match(pattern, formated_input)
+    list=formated_input.split(",")
+    return result, list
 
 def count_lines():
     with open(file_name, 'r') as file:
@@ -123,10 +137,14 @@ async def add_date(ctx):
     try:
         #Read the user input and split it into seperate days
         msg = await client.wait_for("message", check=check, timeout=30)
-        dates_array = msg.content.lower().split(",")
+        dates_list = msg.content.lower().split(",")
         author = str(msg.author)
 
-        writeFile(author, dates_array)
+        matched_pattern, formated_data = format_input(dates_list)
+        if matched_pattern:
+            writeFile(author, formated_data)
+        else:
+            await ctx.send("Wrong format of data. Use !help to find the correct one")
 
     except asyncio.TimeoutError:
         await ctx.send("Sorry, you didn't reply in time")
@@ -144,7 +162,21 @@ async def embed(ctx):
     await ctx.send(embed=embed)
     await ctx.send(f'said {dates_array}')
 
+@client.command()
+async def howtouse(ctx):
+    embed = discord.Embed(title="How to use Alv", description="Usefull commands", color=0x00c7e6)
+    embed.add_field(name="!add_date", value='Add a possible date for the next session')
+    embed.add_field(name="!common", value='Find the common dates between the users')
+    embed.add_field(name="!delete []", value='Delete a specific number of messages. Admin only')
+    await ctx.send(embed=embed)
 
+#Alternatively @commands.has_role('RoleName') can be used
+@client.command(pass_context = True)
+@commands.has_permissions(administrator=True)   #Raises some subclass CommandError
+async def delete(ctx, number):
+    num = int(number)
+    await ctx.channel.purge(limit=num+1)
+    await ctx.send("Messages deleted")
 client.run(TOKEN)
 
 
