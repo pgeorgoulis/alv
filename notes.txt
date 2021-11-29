@@ -40,3 +40,8 @@ async def on_error(event, *args, **kwargs):
 
 #discord.utils.find() to improve simplicity (uses lambda)
 '''
+
+#client.wati_for() to read user inpput raise timeout error
+#context.message to fetch the message of the commands
+#context.author to fetch the user that called the commands
+#context.send to send a message to the channel
