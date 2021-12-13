@@ -1,10 +1,7 @@
 
 # bot.py
 import os
-import csv
 import discord
-import asyncio
-import re
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -14,7 +11,6 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 client = commands.Bot(command_prefix='!')
 #Global variables for the file name and size
-file_name = "dates.csv"
 
 
 #Events

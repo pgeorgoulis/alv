@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import csv
 
 class Find_meeting(commands.Cog):
 
