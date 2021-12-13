@@ -1,10 +1,16 @@
 import discord
+from date import Date
+import asyncio
+import utils
+
+
 from discord.ext import commands
 
 class Add_date(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
 
     #Use add date to add a available date as a user
     @commands.command()
@@ -16,57 +22,33 @@ class Add_date(commands.Cog):
 
         try:
             #Read the user input and split it into seperate days
-            msg = await client.wait_for("message", check=check, timeout=30)
-            dates_list = msg.content.lower().split(",")
+            msg = await self.client.wait_for("message", check=check, timeout=30)
+            input_list = msg.content.lower().split(",")
             author = str(msg.author)
+            dates_list = list()
+            print(f'the input list is: {input_list}')
+            #Create a date object for every date in the input string
+            for entry in input_list:
+                print(f'the first date is {entry}')
+                date = utils.remove_spaces(entry)
+                if utils.is_date(date):
+                    attributes = utils.split_date(date)
+                    #Create the object and append it to the dates_list
+                    obj = Date(attributes[0], attributes[1], attributes[2])
+                    print(f'the objest is {obj}')
+                    dates_list.append(obj)
+                else:
+                    await ctx.send("Wrong format of data. Use !help to find the correct one")
 
-            matched_pattern, formated_data = format_input(dates_list)
-            if matched_pattern:
-                writeFile(author, formated_data)
-            else:
-                await ctx.send("Wrong format of data. Use !help to find the correct one")
+            #write the valid dates_list to a file
+            for date in dates_list:
+                print(date.get_date())
+                utils.writeFile(author, date.get_date())
+
 
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
 
-
-
-    #write the dates to a csv file
-    def writeFile(author, content):
-        lines = list()
-        found_flag=False
-
-        with open(file_name, 'r', newline="") as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
-
-            #Load the whole file in lines list
-            for row in reader:
-                name = row[0]
-                print(name)
-                #rows.append(row)
-                if author != name:
-                    lines.append(row)
-                else:
-                    #get the line and append it at the end
-                    for string in content:
-                        row.append(string)
-                    lines.append(row)
-                    found_flag = True
-                    print("found", author)
-
-            #If the user does not exist already
-            if not found_flag:
-                #then add the new user
-                print("not found", author)
-                content.insert(0, author)
-                lines.append(content)
-
-        #Rewrite the new file
-        with open(file_name, 'w') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerows(lines)
-
-        return
 
 
 def setup(client):
