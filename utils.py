@@ -55,6 +55,21 @@ def file_lines():
                 count += 1
         return count
 
+#Find the max element of a list
+def max(list):
+    max = list[0]
+    for number in list:
+        if number > max:
+            max = number
+    return max
+#find the min element of a list
+def min(list):
+    min = list[0]
+    for number in list:
+        if number < min:
+            min = number
+    return min
+
 #write the dates to a csv file
 def writeFile(author, dates):
     lines = list()
