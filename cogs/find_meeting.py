@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import csv
+import utils
 
 class Find_meeting(commands.Cog):
 
@@ -8,30 +9,14 @@ class Find_meeting(commands.Cog):
         self.client = client
 
     @commands.command()
-    async def common(self, ctx):
-
-        await ctx.send(calc_date())
-
-    def intersection(lst1, lst2):
-        lst3 = [value for value in lst1 if value in lst2]
-        return lst3
-
-    def count_lines():
-        with open(file_name, 'r') as file:
-            count =0
-            for line in file:
-                if line != "\n":
-                    count += 1
-        return count
-
-    def calc_date():
-        common_days = list()
-        line_count = count_lines()
+    async def find_meeting(self, ctx):
+        common_days = set()
+        line_count = utils.file_lines()
         if line_count <= 1:
             print("Error: Not enough entries")
             return
 
-        with open(file_name, 'r', newline="") as csvfile:
+        with open(utils.get_filename(), 'r', newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
 
             #Get the first line
@@ -39,19 +24,35 @@ class Find_meeting(commands.Cog):
             #remove the first element which is the name
             first_row.pop(0)
             #first_days = set(row)
+            date_dictionary1 = {}
+            date_dictionary1 = utils.date_parser(first_row)
 
             #Get the second line
             second_row = next(reader)
             second_row.pop(0)
+            date_dictionary2 = {}
+            date_dictionary2 = utils.date_parser(second_row)
             #Common elements of the first two
-            common_days = intersection(first_row, second_row)
-
+            common_days = date_dictionary1.keys() & date_dictionary2.keys()
+            print("\n\n")
+            print("######")
+            print(common_days)
+            print("######")
+            #for each row
             for i in range(line_count-2):
                 next_row = next(reader)
                 next_row.pop(0)
-                common = intersection(common_days, next_row)
+                #convert the list of dates into a date_dictionary
+                #FIX this is too complicated, Find possible simple solution
+                dic = utils.date_parser(next_row)
+                dates = dic.keys()
+                row_set = set(dates)
+                #find the intersection between the intersection_keys and the new rows
+                common_days = common_days.intersection(row_set)
 
-        return common
+                print("$$$$$$")
+                print(common_days)
+            await ctx.send(common_days)
 
 
 def setup(client):

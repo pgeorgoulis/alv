@@ -35,14 +35,13 @@ class Add_date(commands.Cog):
                     attributes = utils.split_date(date)
                     #Create the object and append it to the dates_list
                     obj = Date(attributes[0], attributes[1], attributes[2])
-                    print(f'the objest is {obj}')
+                    print(f'the object is {obj}')
                     dates_list.append(obj)
                 else:
                     await ctx.send("Wrong format of data. Use !help to find the correct one")
 
             #write the valid dates_list to a file
             for date in dates_list:
-                print(date.get_date())
                 utils.writeFile(author, date.get_date())
 
 
