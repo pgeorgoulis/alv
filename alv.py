@@ -10,6 +10,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 client = commands.Bot(command_prefix='!')
+client.remove_command('help')
 #Global variables for the file name and size
 
 

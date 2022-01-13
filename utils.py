@@ -4,6 +4,8 @@ import re
 
 file_name = "dates.csv"
 
+def get_filename():
+    return file_name
 
 #Take a pottential date and split it to 3 strings
 def split_date(string):
@@ -16,6 +18,20 @@ def split_date(string):
     time2 = times[1]
     return day, time1, time2
 
+#takes a list of dates and parses it to day and time. Then, it adds the
+#day to a dictionary as the key and the time as the value
+def date_parser(list_dates):
+    dictionary = {}
+    for date in list_dates:
+        #parse the date and assing it to the dictionary
+        date, start_time, end_time = split_date(date)
+        dictionary[date] = start_time + "-" + end_time
+    return dictionary
+
+#returns a list of common values
+def intersection(lst1, lst2):
+    lst3 = [value for value in lst1 if value in lst2]
+    return lst3
 
 def remove_spaces(string):
     return string.replace(" ", "")
@@ -26,9 +42,18 @@ def to_string(list):
 
 #Get a string and check if it matches the date format
 def is_date(string):
+    #TODO split the pattern to subpatterns day, time
     pattern='(([1-9]|[0-3][0-9])([(]([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9]-([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9][)]),?)+'
     result = re.match(pattern, string)
     return result
+
+def file_lines():
+    with open(file_name, 'r') as file:
+        count =0
+        for line in file:
+            if line != "\n":
+                count += 1
+        return count
 
 #write the dates to a csv file
 def writeFile(author, dates):
