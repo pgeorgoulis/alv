@@ -13,10 +13,14 @@ def split_date(string):
     day = result[0]
     #remove the last character: )
     times = result[1].replace(")", "")
-    times = times.split("-")
-    time1 = times[0]
-    time2 = times[1]
-    return day, time1, time2
+    start_time, end_time = split_time(times)
+    return day, start_time, end_time
+
+def split_time(string):
+    result = string.split("-")
+    start_time = result[0]
+    end_time = result[1]
+    return start_time, end_time
 
 #takes a list of dates and parses it to day and time. Then, it adds the
 #day to a dictionary as the key and the time as the value
@@ -56,6 +60,7 @@ def file_lines():
         return count
 
 #Find the max element of a list
+## TODO: convert the list to integers
 def max(list):
     max = list[0]
     for number in list:
