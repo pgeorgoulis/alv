@@ -2,6 +2,7 @@ import os
 import csv
 import re
 from date import Date
+from t import Treno
 
 file_name = "dates.csv"
 
@@ -68,6 +69,17 @@ def max_time(time_list):
                 max_obj = object
     return max_obj
 
+def time_diff(time1, time2):
+    if time2.get_minutes() >= time1.get_minutes():
+        new_minutes = time2.get_minutes() - time1.get_minutes()
+        new_hour = time2.get_hour() - time1.get_hour()
+    else:
+        new_minutes = 60 + time2.get_minutes() - time1.get_minutes()
+        new_hour = time2.get_hour() - 1 - time1.get_hour()
+    #create the time object and return it
+    time_obj = Treno(new_hour, new_minutes)
+    return time_obj
+    
 """Random Utilities"""
 
 def remove_spaces(string):
