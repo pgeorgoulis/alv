@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import get
 import csv
 import utils
 
@@ -82,10 +83,17 @@ class Find_meeting(commands.Cog):
         if len(meetings) == 0:
             await ctx.send("There are no common dates or times in the given dates")
         else:
+            '''guild = ctx.guild
+            dm_role = get(guild.roles, name='Dm')'''
+            await ctx.send("The available dates for a session are the following. A Dm should react with  to confirm the session")
+            '''await ctx.send(dm_role.mention)'''
             for date, time in meetings.items():
-                await ctx.send("Meeing found:\nDate: "+ date +"\nStart time: "+ time[0].time_to_string() +"\nEnd time: "+time[1].time_to_string() )
-
-
+                #Create the emced and then send it
+                embed = discord.Embed(title="Session", colour=0x87CEEB)
+                embed.add_field(name="Date", value=date, inline=False)
+                embed.add_field(name="Start time", value=time[0].time_to_string(), inline=True)
+                embed.add_field(name="End time", value=time[1].time_to_string(), inline=True)
+                await ctx.send(embed=embed)
 
 def setup(client):
     client.add_cog(Find_meeting(client))
