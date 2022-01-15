@@ -36,13 +36,6 @@ def date_parser(list_dates):
         dictionary[date_obj.get_day()] = times_list
     return dictionary
 
-#Get a string and check if it matches the date format
-def is_date(string):
-    #TODO split the pattern to subpatterns day, time
-    pattern='(([1-9]|[0-3][0-9])([(]([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9]-([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9][)]),?)+'
-    result = re.match(pattern, string)
-    return result
-
 #Gets a list of Time objects and returns the smallest time
 def min_time(time_list):
     min_obj = time_list[0]
@@ -79,11 +72,20 @@ def time_diff(time1, time2):
     #create the time object and return it
     time_obj = Treno(new_hour, new_minutes)
     return time_obj
-    
+
 """Random Utilities"""
 
 def remove_spaces(string):
     return string.replace(" ", "")
+
+#Get a string and check if it matches the date format
+def is_date(string):
+    day = '([1-9]|[0-2][0-9]|30|31)'
+    month = '(1[0-2])|(0?[1-9])'
+    time = '(0?[0-9]|1[0-9]|[2][0-3]):([0-5][0-9])'
+    pattern = day+'[]\/]'+month+'[(]'+time+'-'+time+'[)]'
+    result = re.search(pattern, string)
+    return result
 
 """Tools for files"""
 
@@ -107,7 +109,6 @@ def writeFile(author, dates):
         #Load the whole file in lines list
         for row in reader:
             name = row[0]
-            print(name)
             #rows.append(row)
             if author != name:
                 lines.append(row)
@@ -119,18 +120,15 @@ def writeFile(author, dates):
                         row.append(string)
                     lines.append(row)
                     found_flag = True
-                    print("found", author)
                 else:
                     #its only one dates
                     row.append(dates)
                     lines.append(row)
                     found_flag = True
-                    print("found", author)
 
         #If the user does not exist already
         if not found_flag:
             #then add the new user
-            print("not found", author)
             dates.insert(0, author)
             lines.append(dates)
 

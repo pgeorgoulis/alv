@@ -14,7 +14,7 @@ class Find_meeting(commands.Cog):
         common_days = set()
         line_count = utils.file_lines()
         if line_count <= 1:
-            print("Error: Not enough entries")
+            await ctx.send("Error: Not enough entries")
             return
 
         with open(utils.get_filename(), 'r', newline="") as csvfile:
@@ -34,10 +34,6 @@ class Find_meeting(commands.Cog):
             date_dictionary2 = utils.date_parser(second_row)
             #Common elements of the first two
             common_days = date_dictionary1.keys() & date_dictionary2.keys()
-            print("\n\n")
-            print("######")
-            print(common_days)
-            print("######")
             #for each row
             for i in range(line_count-2):
                 next_row = next(reader)
@@ -49,9 +45,6 @@ class Find_meeting(commands.Cog):
                 row_set = set(dates)
                 #find the intersection between the intersection_keys and the new rows
                 common_days = common_days.intersection(row_set)
-
-                print("$$$$$$")
-                print(f'the common_days are {common_days}\n')
 
 
         #read the whole file and store it to a list. Each user/line is a dictionary of dates
@@ -70,18 +63,16 @@ class Find_meeting(commands.Cog):
             start_times = []
             end_times = []
             for i in range(line_count):
-                print(f'the lines[i].get(date) are {lines[i].get(date)}\n')
                 time = lines[i].get(date)
                 start_times.append(time[0])
                 end_times.append(time[1])
-                print(f'the start_times.append(time[0]) end_times.append(time[1]) are {time[0]} {time[1]}\n')
+
             #now we have all the start and end times from all the users for that date
             #The real starting time will be the maximum value of the start_times list
             #The real ending time will be the minimum value of the end_times list
             start = utils.max_time(start_times)
-            print(f'max(start time) {start.time_to_string()}\n')
+
             end = utils.min_time(end_times)
-            print(f'min(end time) {end.time_to_string()}\n')
             #If the time differtence is acceptable add the date add the time to the meetings list
             time_difference = utils.time_diff(start, end)
             if time_difference.get_hour() > 4:
