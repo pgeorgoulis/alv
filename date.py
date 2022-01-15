@@ -1,13 +1,23 @@
+from t import Treno
+
 class Date():
-    def __init__(self, day, start_time, end_time):
+    #Take three strings and initialize a date
+    def __init__(self, day, start, end):
         self.day = day
-        self.start_time = start_time
-        self.end_time = end_time
 
-    def unite(self, day, time1, time2):
-        string = day+"("+time1+"-"+time2+")"
-        return string
+        #split the time to hours and minutes
+        s_list = start.split(":")
+        self.start_time = Treno(int(s_list[0]), int(s_list[1]))
 
-    def get_date(self):
-        string = self.unite(self.day, self.start_time, self.end_time)
-        return string
+        e_list = end.split(":")
+        self.end_time = Treno(int(e_list[0]), int(e_list[1]))
+
+
+    def get_day(self):
+        return self.day
+    def get_start_time(self):
+        return self.start_time
+    def get_end_time(self):
+        return self.end_time
+    def get_full_date(self):
+        return self.day+"("+self.start_time.time_to_string()+"-"+self.end_time.time_to_string()+")"
