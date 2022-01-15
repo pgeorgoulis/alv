@@ -26,23 +26,20 @@ class Add_date(commands.Cog):
             input_list = msg.content.lower().split(",")
             author = str(msg.author)
             dates_list = list()
-            print(f'the input list is: {input_list}')
             #Create a date object for every date in the input string
             for entry in input_list:
-                print(f'the first date is {entry}')
                 date = utils.remove_spaces(entry)
                 if utils.is_date(date):
                     attributes = utils.split_date(date)
                     #Create the object and append it to the dates_list
                     obj = Date(attributes[0], attributes[1], attributes[2])
-                    print(f'the object is {obj}')
                     dates_list.append(obj)
                 else:
                     await ctx.send("Wrong format of data. Use !help to find the correct one")
 
             #write the valid dates_list to a file
             for date in dates_list:
-                utils.writeFile(author, date.get_date())
+                utils.writeFile(author, date.get_full_date())
 
 
         except asyncio.TimeoutError:
