@@ -9,6 +9,7 @@ class Find_meeting(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.has_permissions(administrator=True)   #Raises some subclass CommandError
     async def find_meeting(self, ctx):
         common_days = set()
         line_count = utils.file_lines()
@@ -64,6 +65,7 @@ class Find_meeting(commands.Cog):
                 dictionary = utils.date_parser(row)
                 lines.append(dictionary)
 
+        meetings = {}
         for date in common_days:
             start_times = []
             end_times = []
@@ -76,10 +78,22 @@ class Find_meeting(commands.Cog):
             #now we have all the start and end times from all the users for that date
             #The real starting time will be the maximum value of the start_times list
             #The real ending time will be the minimum value of the end_times list
-            max = utils.max_time(start_times)
-            print(f'max(start time) {max.time_to_string()}\n')
-            min = utils.min_time(end_times)
-            print(f'min(end time) {min.time_to_string()}\n')
+            start = utils.max_time(start_times)
+            print(f'max(start time) {start.time_to_string()}\n')
+            end = utils.min_time(end_times)
+            print(f'min(end time) {end.time_to_string()}\n')
+            #If the time differtence is acceptable add the date add the time to the meetings list
+            time_difference = utils.time_diff(start, end)
+            if time_difference.get_hour() > 4:
+                meetings[date] = [start, end]
+
+        #By now all the acceptable meetings should be added to the meetings dictionary
+        if len(meetings) == 0:
+            await ctx.send("There are no common dates or times in the given dates")
+        else:
+            for date, time in meetings.items():
+                await ctx.send("Meeing found:\nDate: "+ date +"\nStart time: "+ time[0].time_to_string() +"\nEnd time: "+time[1].time_to_string() )
+
 
 
 def setup(client):
