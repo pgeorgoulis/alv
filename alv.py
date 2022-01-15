@@ -22,8 +22,8 @@ async def on_ready():
             break
 
     print(
-    f'{client.user} is connecter to the following guild:\n'
-    f'{guild.name}(id: {guild.id})' #print the rest of the members
+        f'{client.user} is connected to the following guild:\n'
+        f'{guild.name}(id: {guild.id})'
     )
 
     members = '\n - '.join([member.name for member in guild.members])
