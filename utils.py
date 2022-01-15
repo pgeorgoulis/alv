@@ -1,11 +1,18 @@
 import os
 import csv
 import re
+from date import Date
 
 file_name = "dates.csv"
 
-def get_filename():
-    return file_name
+
+"""Date manipulation"""
+#Take a time frame string (12:15-4:00) and split it to two seperate times
+def split_time(string):
+    result = string.split("-")
+    start_time = result[0]
+    end_time = result[1]
+    return start_time, end_time
 
 #Take a pottential date and split it to 3 strings
 def split_date(string):
@@ -16,33 +23,17 @@ def split_date(string):
     start_time, end_time = split_time(times)
     return day, start_time, end_time
 
-def split_time(string):
-    result = string.split("-")
-    start_time = result[0]
-    end_time = result[1]
-    return start_time, end_time
-
 #takes a list of dates and parses it to day and time. Then, it adds the
-#day to a dictionary as the key and the time as the value
+#day to a dictionary as the key and a list of two time objects as the value
 def date_parser(list_dates):
     dictionary = {}
     for date in list_dates:
-        #parse the date and assing it to the dictionary
+        #parse the date and asign it to the dictionary
         date, start_time, end_time = split_date(date)
-        dictionary[date] = start_time + "-" + end_time
+        date_obj = Date(date, start_time, end_time)
+        times_list = [date_obj.get_start_time(), date_obj.get_end_time()]
+        dictionary[date_obj.get_day()] = times_list
     return dictionary
-
-#returns a list of common values
-def intersection(lst1, lst2):
-    lst3 = [value for value in lst1 if value in lst2]
-    return lst3
-
-def remove_spaces(string):
-    return string.replace(" ", "")
-
-#convert a list to a string
-def to_string(list):
-    return ' '.join(str(elem) for elem in list)
 
 #Get a string and check if it matches the date format
 def is_date(string):
@@ -50,6 +41,39 @@ def is_date(string):
     pattern='(([1-9]|[0-3][0-9])([(]([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9]-([1-9]|[0-1][0-9]|[2][0-3]):[0-5][0-9][)]),?)+'
     result = re.match(pattern, string)
     return result
+
+#Gets a list of Time objects and returns the smallest time
+def min_time(time_list):
+    min_obj = time_list[0]
+    min_minutes = min_obj.get_minutes()
+    min_hour = min_obj.get_hour()
+    for object in time_list:
+        if object.get_hour() < min_hour:
+            min_obj = object
+        if object.get_hour() == min_hour:
+            if object.get_minutes() < min_minutes:
+                min_obj = object
+    return min_obj
+
+#Gets a list of Time objects and returns the bigest time
+def max_time(time_list):
+    max_obj = time_list[0]
+    max_minutes = max_obj.get_minutes()
+    max_hour = max_obj.get_hour()
+    for object in time_list:
+        if object.get_hour() > max_hour:
+            max_obj = object
+        if object.get_hour() == max_hour:
+            if object.get_minutes() > max_minutes:
+                max_obj = object
+    return max_obj
+
+"""Random Utilities"""
+
+def remove_spaces(string):
+    return string.replace(" ", "")
+
+"""Tools for files"""
 
 def file_lines():
     with open(file_name, 'r') as file:
@@ -59,21 +83,8 @@ def file_lines():
                 count += 1
         return count
 
-#Find the max element of a list
-## TODO: convert the list to integers
-def max(list):
-    max = list[0]
-    for number in list:
-        if number > max:
-            max = number
-    return max
-#find the min element of a list
-def min(list):
-    min = list[0]
-    for number in list:
-        if number < min:
-            min = number
-    return min
+def get_filename():
+    return file_name
 
 #write the dates to a csv file
 def writeFile(author, dates):
