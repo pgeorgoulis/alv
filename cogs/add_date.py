@@ -1,6 +1,7 @@
 import discord
 from date import Date
 import asyncio
+import csv
 import utils
 
 
@@ -22,7 +23,7 @@ class Add_date(commands.Cog):
 
         try:
             #Read the user input and split it into seperate days
-            msg = await self.client.wait_for("message", check=check, timeout=30)
+            msg = await self.client.wait_for("message", check=check, timeout=120)
             input_list = msg.content.lower().split(",")
             author = str(msg.author)
             dates_list = list()
@@ -46,6 +47,61 @@ class Add_date(commands.Cog):
             await ctx.send("Sorry, you didn't reply in time")
 
 
+    @commands.command()
+    async def remove_date(self, ctx):
+
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+
+        try:
+            await ctx.send('Enter the number or numbers of the dates you wish to delete: ')
+            #Read the user input and split it into seperate days
+            msg = await self.client.wait_for("message", check=check, timeout=120)
+            input_list = msg.content.lower().split(",")
+            author = str(msg.author)
+
+
+
+        except asyncio.TimeoutError:
+            await ctx.send("Sorry, you didn't reply in time")
+
+    @commands.command()
+    async def show_date(self, ctx):
+        #Find the dates the user has entered
+        with open(utils.get_filename(), 'r', newline="") as csvfile:
+            reader = csv.reader(csvfile, delimiter=",")
+
+            line_count = utils.file_lines()
+            user_found = False
+            for i in range(line_count):
+                #First, find the user
+                row = next(reader)
+                print(row[0])
+                if row[0] != str(ctx.author):
+                    continue
+                else:
+                    users_line = row
+                    #Exit the loop after the user is found
+                    user_found = True
+                    break
+
+            if user_found is True:
+                list = []
+                if len(users_line) == 1:
+                    await ctx.send('You haven\'t entered any dates.')
+                    return
+                #pop the users name and add numbers to the printed list
+                users_line.pop(0)
+                #For each date the user has entered
+                for i in range(len(users_line)):
+                    line = str(i+1)+". "+users_line[i]+"\n"
+                    list.append(line)
+            else:
+                await ctx.send(f'Error: user {ctx.author} was not found in the file')
+                return
+        await ctx.send(ctx.author.mention)
+        string_to_print = "".join(list)
+        await ctx.send('Here are the dates you have entered:\n'+string_to_print)
 
 def setup(client):
     client.add_cog(Add_date(client))
