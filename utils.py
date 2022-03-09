@@ -39,27 +39,37 @@ def date_parser(list_dates):
 #Gets a list of Time objects and returns the smallest time
 def min_time(time_list):
     min_obj = time_list[0]
-    min_minutes = min_obj.get_minutes()
     min_hour = min_obj.get_hour()
+    min_minutes = min_obj.get_minutes()
+
     for object in time_list:
         if object.get_hour() < min_hour:
             min_obj = object
+            min_hour = object.get_hour()
+            min_minutes = object.get_minutes()
         if object.get_hour() == min_hour:
             if object.get_minutes() < min_minutes:
                 min_obj = object
+                min_hour = object.get_hour()
+                min_minutes = object.get_minutes()
     return min_obj
 
 #Gets a list of Time objects and returns the bigest time
 def max_time(time_list):
     max_obj = time_list[0]
-    max_minutes = max_obj.get_minutes()
     max_hour = max_obj.get_hour()
+    max_minutes = max_obj.get_minutes()
+
     for object in time_list:
         if object.get_hour() > max_hour:
             max_obj = object
+            max_hour = object.get_hour()
+            max_minutes = object.get_minutes()
         if object.get_hour() == max_hour:
             if object.get_minutes() > max_minutes:
                 max_obj = object
+                max_hour = object.get_hour()
+                max_minutes = object.get_minutes()
     return max_obj
 
 def time_diff(time1, time2):
@@ -88,7 +98,7 @@ def is_date(string):
     return result
 
 """Tools for files"""
-
+#Counts the lines of a file
 def file_lines():
     with open(file_name, 'r') as file:
         count =0
@@ -97,8 +107,13 @@ def file_lines():
                 count += 1
         return count
 
+#Returns the name of the file
 def get_filename():
     return file_name
+
+#Returns the content of the file in a Dictionary format with the dates as intersection_keys
+#and the times as values
+#TODO implement it
 
 #write the dates to a csv file
 def writeFile(author, dates):
@@ -120,17 +135,23 @@ def writeFile(author, dates):
                         row.append(string)
                     lines.append(row)
                     found_flag = True
+                    break
                 else:
                     #its only one dates
                     row.append(dates)
                     lines.append(row)
                     found_flag = True
+                    break
 
         #If the user does not exist already
+        ## TODO: FIX This. It does not work when the user does not exist.
         if not found_flag:
             #then add the new user
-            dates.insert(0, author)
-            lines.append(dates)
+            new_line = []
+            new_line.append(author)
+            new_line.append(dates)
+
+            lines.append(new_line)
 
     #Rewrite the new file
     with open(file_name, 'w') as csvfile:

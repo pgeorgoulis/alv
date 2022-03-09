@@ -14,19 +14,18 @@ class Find_meeting(commands.Cog):
     async def find_meeting(self, ctx):
         common_days = set()
         line_count = utils.file_lines()
-        if line_count <= 1:
+        if line_count <= 2:
             await ctx.send("Error: Not enough entries")
             return
-
+        #Find the common days
         with open(utils.get_filename(), 'r', newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
             date_dictionary1 = {}
             date_dictionary2 = {}
-            #Get the first line
+            #Get the first line and remove the name from the start of the string
             first_row = next(reader)
-            #remove the first element which is the name
             first_row.pop(0)
-            #first_days = set(row)
+            #make the first row into a disctionary
             date_dictionary1 = utils.date_parser(first_row)
 
             #Get the second line
@@ -46,7 +45,7 @@ class Find_meeting(commands.Cog):
                 row_set = set(dates)
                 #find the intersection between the intersection_keys and the new rows
                 common_days = common_days.intersection(row_set)
-
+            print(common_days)
 
         #read the whole file and store it to a list. Each user/line is a dictionary of dates
         lines = []
@@ -60,6 +59,7 @@ class Find_meeting(commands.Cog):
                 lines.append(dictionary)
 
         meetings = {}
+        #Find the commmon times
         for date in common_days:
             start_times = []
             end_times = []
@@ -84,9 +84,9 @@ class Find_meeting(commands.Cog):
             await ctx.send("There are no common dates or times in the given dates")
         else:
             '''guild = ctx.guild
-            dm_role = get(guild.roles, name='Dm')'''
+            dm_role = get(guild.roles, name='Dm')
             await ctx.send("The available dates for a session are the following. A Dm should react with  to confirm the session")
-            '''await ctx.send(dm_role.mention)'''
+            await ctx.send(dm_role.mention)'''
             for date, time in meetings.items():
                 #Create the emced and then send it
                 embed = discord.Embed(title="Session", colour=0x87CEEB)
