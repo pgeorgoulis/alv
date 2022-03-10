@@ -47,8 +47,32 @@ class Add_date(commands.Cog):
             await ctx.send("Sorry, you didn't reply in time")
 
 
+
+
+    @commands.command()
+    async def show_dates(self, ctx):
+
+        message, list = utils.show_date(str(ctx.author))
+        #Mention the user, print the message and if the list is not empty, print it.
+        await ctx.send(ctx.author.mention)
+        await ctx.send(message)
+
+        if len(list) != 0:
+            dates_string = "".join(list)
+            await ctx.send(dates_string)
+
+
     @commands.command()
     async def remove_date(self, ctx):
+        #Show the dates the user has entered
+        dates_list = []
+        message, dates_list = utils.show_date(str(ctx.author))
+        #Mention the user, print the message and if the list is not empty, print it.
+        await ctx.send(ctx.author.mention)
+        await ctx.send(message)
+        if len(dates_list) != 0:
+            dates_string = "".join(dates_list)
+            await ctx.send(dates_string)
 
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
@@ -56,52 +80,64 @@ class Add_date(commands.Cog):
         try:
             await ctx.send('Enter the number or numbers of the dates you wish to delete: ')
             #Read the user input and split it into seperate days
-            msg = await self.client.wait_for("message", check=check, timeout=120)
-            input_list = msg.content.lower().split(",")
+            msg = await self.client.wait_for("message", check=check, timeout=60)
+            input_list = msg.content.split(",")
             author = str(msg.author)
+            #Sanitize the input
+            sanitized_list = []
+            for entry in input_list:
+                entry = utils.remove_spaces(entry)
+                #If its a number and it exists in the file, add it to the list
+                if utils.is_number(entry):
+                    num = int(entry)
+                    if num <= len(dates_list):
+                        sanitized_list.append(num)
+            #First remove the necessary dates
+            for number in sanitized_list:
+                #FIX: Only the first pop will be correct. The ones that follow will pop the
+                #wrong index
+                dates_list.pop(number-1)
+            #Then normalize the rest of the entries (remove the digit and the \n)
+            #TODO find a more optimized way
+            final_dates = []
+            for date in dates_list:
+                temp = list(date)
+                #The format is for example 1. 22/1(9:00-23:59)\n
+                temp.pop(0)
+                temp.pop(0)
+                temp.pop(0)
+                temp.pop(-1)
+                string = "".join(temp)
+                final_dates.append(string)
 
 
+            #Write to the file
+            #TODO needs impovement
+            lines = list()
+            with open(utils.get_filename(), 'r', newline="") as csvfile:
+                reader = csv.reader(csvfile, delimiter=",")
+                #Load the whole file in lines list
+                for row in reader:
+                    name = row[0]
+                    #rows.append(row)
+                    if author != name:
+                        lines.append(row)
+                    else:
+                        new_line = []
+                        new_line.append(author)
+                        for string in final_dates:
+                            new_line.append(string)
+                        lines.append(new_line)
+                        print(lines)
+            #Rewrite the new file
+            with open(utils.get_filename(), 'w') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerows(lines)
 
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
 
-    @commands.command()
-    async def show_date(self, ctx):
-        #Find the dates the user has entered
-        with open(utils.get_filename(), 'r', newline="") as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
 
-            line_count = utils.file_lines()
-            user_found = False
-            for i in range(line_count):
-                #First, find the user
-                row = next(reader)
-                print(row[0])
-                if row[0] != str(ctx.author):
-                    continue
-                else:
-                    users_line = row
-                    #Exit the loop after the user is found
-                    user_found = True
-                    break
-
-            if user_found is True:
-                list = []
-                if len(users_line) == 1:
-                    await ctx.send('You haven\'t entered any dates.')
-                    return
-                #pop the users name and add numbers to the printed list
-                users_line.pop(0)
-                #For each date the user has entered
-                for i in range(len(users_line)):
-                    line = str(i+1)+". "+users_line[i]+"\n"
-                    list.append(line)
-            else:
-                await ctx.send(f'Error: user {ctx.author} was not found in the file')
-                return
-        await ctx.send(ctx.author.mention)
-        string_to_print = "".join(list)
-        await ctx.send('Here are the dates you have entered:\n'+string_to_print)
 
 def setup(client):
     client.add_cog(Add_date(client))
