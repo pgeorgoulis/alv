@@ -88,6 +88,12 @@ def time_diff(time1, time2):
 def remove_spaces(string):
     return string.replace(" ", "")
 
+#Get a string and check if it is made out of digits
+def is_number(string):
+    #one or more numnbers
+    digits = '[0-9]+'
+    result = re.search(digits, string)
+    return result
 #Get a string and check if it matches the date format
 def is_date(string):
     day = '([1-9]|[0-2][0-9]|30|31)'
@@ -115,6 +121,48 @@ def get_filename():
 #and the times as values
 #TODO implement it
 
+
+#Get a name as input and return a list with the dates and a string with
+# the appropriate message
+def show_date(author):
+    with open(file_name, 'r', newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        line_count = file_lines()
+        user_found = False
+
+        list = []
+        message_string = ""
+
+        for i in range(line_count):
+            #First, find the user
+            row = next(reader)
+            if row[0] != str(author):
+                continue
+            else:
+                users_line = row
+                print(f'The user was found in row {i+1}')
+                #Exit the loop after the user is found
+                user_found = True
+                break
+
+        if user_found is True:
+            if len(users_line) == 1:
+                message_string = "You haven\'t entered any dates."
+                return message_string, list
+            #If the user is found
+            message_string = "I found the following dates by "+author
+            #pop the users name and add numbers to the printed list
+            users_line.pop(0)
+            #For each date the user has entered
+            for i in range(len(users_line)):
+                line = str(i+1)+". "+users_line[i]+"\n"
+                list.append(line)
+        else:
+            message_string = "Error: user "+author+" was not found in the file"
+
+        return message_string, list
+
+
 #write the dates to a csv file
 def writeFile(author, dates):
     lines = list()
@@ -135,6 +183,7 @@ def writeFile(author, dates):
                         row.append(string)
                     lines.append(row)
                     found_flag = True
+                    #TODO might need to remove the break
                     break
                 else:
                     #its only one dates
@@ -144,7 +193,7 @@ def writeFile(author, dates):
                     break
 
         #If the user does not exist already
-        ## TODO: FIX This. It does not work when the user does not exist.
+        #possibly not working if a new user enters multiple dates
         if not found_flag:
             #then add the new user
             new_line = []
