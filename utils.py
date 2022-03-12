@@ -172,6 +172,34 @@ def get_users_dates(author):
 
         return dates_list, exit_code, message
 
+
+#Get a user and a list of date objects. Find if they exist or not in the file
+#Used to confirm add_date and remove_date
+#Could return a boolean list with each element refaring to the date list
+def confirm_change(author, date_list):
+    #Call the get users date command.
+    users_dates, exit_code, message = get_users_dates(author)
+    print(message)
+
+    found_list = []
+    #We need the user to exist. So only exit codes 0, 1
+    if exit_code == 0:
+        #The user was found and he has entered dates.
+        for date in date_list:
+            date_found = False
+            for u_date in users_dates:
+                if date.get_full_date() == u_date.get_full_date():
+                    date_found = True
+            found_list.append(date_found)
+
+    else if exit_code == 1:
+        for date in date_list:
+            found_list.append(False)
+    else:
+        pass #The user was not found in the file so return some error code
+
+    return found_list, exit_code
+
 #write the dates to a csv file
 def writeFile(author, dates):
     lines = list()

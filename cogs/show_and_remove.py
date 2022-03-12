@@ -111,6 +111,17 @@ class Show_and_remove(commands.Cog):
                 writer = csv.writer(csvfile)
                 writer.writerows(lines)
 
+            #Check if the dates were added succesfully
+            found_list, exit_code = utils.confirm_change(author, remove_dates)
+            for i in range(found_list):
+                if found_list[i]:
+                    await ctx.send(f'Error: Date {remove_dates[i]} was not removed')
+                else:
+                    #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
+                    #Each date that was not added should be sent on its own.
+                    await ctx.send(f'Date {remove_dates[i]} was removed succesfully')
+
+
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
 

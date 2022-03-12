@@ -42,6 +42,15 @@ class Add_date(commands.Cog):
             for date in dates_list:
                 utils.writeFile(author, date.get_full_date())
 
+            #Check if the dates were added succesfully
+            found_list, exit_code = utils.confirm_change(author, dates_list)
+            for i in range(found_list):
+                if found_list[i]:
+                    #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
+                    #Each date that was not added should be sent on its own.
+                    await ctx.send(f'Date {dates_list[i]} was added succesfully')
+                else:
+                    await ctx.send(f'Error: Date {dates_list[i]} was not added')
 
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
