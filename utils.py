@@ -122,17 +122,22 @@ def get_filename():
 #TODO implement it
 
 
-#Get a name as input and return a list with the dates and a string with
-# the appropriate message
-def show_date(author):
+#Get a name as input and return a list with the date objects the user has entered
+# returns 1. The date list, 2. Exit code, 3. Exit message
+#Exit codes:
+# -1 initial code. Meands no message was assigned
+#  0 User found and he has entered dates
+#  1 User found but he has not entered dates
+#  2 User was not found
+def get_users_dates(author):
     with open(file_name, 'r', newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         line_count = file_lines()
         user_found = False
 
-        list = []
-        message_string = ""
-
+        dates_list = []
+        message = ""
+        exit_code = -1  #shows which instance occured with a number. Used in remove date
         for i in range(line_count):
             #First, find the user
             row = next(reader)
@@ -143,24 +148,29 @@ def show_date(author):
                 print(f'The user was found in row {i+1}')
                 #Exit the loop after the user is found
                 user_found = True
+
                 break
 
         if user_found is True:
             if len(users_line) == 1:
-                message_string = "You haven\'t entered any dates."
-                return message_string, list
+                message = "You haven\'t entered any dates."
+                exit_code = 1
+                return dates_list, exit_code, message
             #If the user is found
-            message_string = "I found the following dates by "+author
-            #pop the users name and add numbers to the printed list
+            message = "I found the following dates by "+author
+            exit_code = 0
+            #pop the users name
             users_line.pop(0)
-            #For each date the user has entered
-            for i in range(len(users_line)):
-                line = str(i+1)+". "+users_line[i]+"\n"
-                list.append(line)
-        else:
-            message_string = "Error: user "+author+" was not found in the file"
 
-        return message_string, list
+            for date in users_line:
+                splitted = split_date(date)
+                object = Date(splitted[0], splitted[1], splitted[2])
+                dates_list.append(object)
+        else:
+            message = "Error: user "+author+" was not found in the file"
+            exit_code = 2
+
+        return dates_list, exit_code, message
 
 
 #write the dates to a csv file
@@ -193,7 +203,6 @@ def writeFile(author, dates):
                     break
 
         #If the user does not exist already
-        #possibly not working if a new user enters multiple dates
         if not found_flag:
             #then add the new user
             new_line = []
