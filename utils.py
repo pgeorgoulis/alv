@@ -172,7 +172,6 @@ def get_users_dates(author):
 
         return dates_list, exit_code, message
 
-
 #write the dates to a csv file
 def writeFile(author, dates):
     lines = list()

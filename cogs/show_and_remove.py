@@ -31,20 +31,28 @@ class Show_and_remove(commands.Cog):
                 i+=1
             await ctx.send(final_string)
 
+
     @commands.command()
     async def remove_date(self, ctx):
-        #Show the dates the user has entered
-        dates_list = []
-        message, dates_list, exit_code = utils.show_date(str(ctx.author))
+        #Show the dates to the user
+        #Need to find diffrent aproach instead of copying the show dates code.
+        dates_list, exit_code, message = utils.get_users_dates(str(ctx.author))
         #Mention the user, print the message and if the list is not empty, print it.
         await ctx.send(ctx.author.mention)
         await ctx.send(message)
-        #If an error occured, end the function
-        if exit_code != 0:
+
+        #Only if the error code is 0 print the dates. Else, there aren't any dates to print
+        final_string = ""
+        if exit_code == 0:
+            #Initialize the counter
+            i=1
+            for date in dates_list:
+                temp = str(i)+". "+ date.get_full_date() +"\n"
+                final_string += temp
+                i+=1
+            await ctx.send(final_string)
+        else:
             return
-        if len(dates_list) != 0:
-            dates_string = "".join(dates_list)
-            await ctx.send(dates_string)
 
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
@@ -55,6 +63,7 @@ class Show_and_remove(commands.Cog):
             msg = await self.client.wait_for("message", check=check, timeout=60)
             input_list = msg.content.split(",")
             author = str(msg.author)
+
             #Sanitize the input
             sanitized_list = []
             for entry in input_list:
@@ -64,22 +73,24 @@ class Show_and_remove(commands.Cog):
                     num = int(entry)
                     if num <= len(dates_list):
                         sanitized_list.append(num)
-            #First remove the necessary dates
+                    else:
+                        await ctx.send(f'Error: Number {num} does not exist in the list above')
+
+            #Find the dates that need to be removed
+            remove_dates = []
             for number in sanitized_list:
-                del dates_list[number-1]
-            #Then normalize the rest of the entries (remove the digit and the \n)
-            #TODO find a more optimized way
-            final_dates = []
-            for date in dates_list:
-                temp = list(date)
-                #The format is for example 1. 22/1(9:00-23:59)\n
-                del temp[0:2]
-                del temp[-1]
-                string = "".join(temp)
-                final_dates.append(string)
+                remove_dates.append(dates_list[number-1])
+
+            #And remove them
+            for r_date in remove_dates:
+                for date in dates_list:
+                    #TODO see if comparing objects works
+                    if r_date.get_full_date() == date.get_full_date():
+                        dates_list.remove(date)
+                        #TODO probably needs break here
 
             #Write to the file
-            #TODO needs impovement
+            #TODO needs impovement, make this function one the the utils write file function
             lines = list()
             with open(utils.get_filename(), 'r', newline="") as csvfile:
                 reader = csv.reader(csvfile, delimiter=",")
@@ -92,10 +103,9 @@ class Show_and_remove(commands.Cog):
                     else:
                         new_line = []
                         new_line.append(author)
-                        for string in final_dates:
-                            new_line.append(string)
+                        for date in dates_list:
+                            new_line.append(date.get_full_date())
                         lines.append(new_line)
-                        print(lines)
             #Rewrite the new file
             with open(utils.get_filename(), 'w') as csvfile:
                 writer = csv.writer(csvfile)
