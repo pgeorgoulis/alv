@@ -13,7 +13,7 @@ class Show_and_remove(commands.Cog):
 
 
     @commands.command()
-    async def show_dates(self, ctx):
+    async def show(self, ctx):
 
         dates_list, exit_code, message = utils.get_users_dates(str(ctx.author))
         #Mention the user, print the message and if the list is not empty, print it.
@@ -33,10 +33,11 @@ class Show_and_remove(commands.Cog):
 
 
     @commands.command()
-    async def remove_date(self, ctx):
+    async def remove(self, ctx):
         #Show the dates to the user
         #Need to find diffrent aproach instead of copying the show dates code.
         dates_list, exit_code, message = utils.get_users_dates(str(ctx.author))
+
         #Mention the user, print the message and if the list is not empty, print it.
         await ctx.send(ctx.author.mention)
         await ctx.send(message)
@@ -113,13 +114,13 @@ class Show_and_remove(commands.Cog):
 
             #Check if the dates were added succesfully
             found_list, exit_code = utils.confirm_change(author, remove_dates)
-            for i in range(found_list):
+            for i in range(len(found_list)):
                 if found_list[i]:
-                    await ctx.send(f'Error: Date {remove_dates[i]} was not removed')
+                    await ctx.send(f'Error: Date {remove_dates[i].get_full_date()} was not removed')
                 else:
                     #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
                     #Each date that was not added should be sent on its own.
-                    await ctx.send(f'Date {remove_dates[i]} was removed succesfully')
+                    await ctx.send(f'Date {remove_dates[i].get_full_date()} was removed succesfully')
 
 
         except asyncio.TimeoutError:
