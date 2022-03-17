@@ -2,7 +2,7 @@ import os
 import csv
 import re
 from date import Date
-from t import Treno
+from t import TimeObj
 
 file_name = "dates.csv"
 
@@ -80,8 +80,32 @@ def time_diff(time1, time2):
         new_minutes = 60 + time2.get_minutes() - time1.get_minutes()
         new_hour = time2.get_hour() - 1 - time1.get_hour()
     #create the time object and return it
-    time_obj = Treno(new_hour, new_minutes)
+    time_obj = TimeObj(new_hour, new_minutes)
     return time_obj
+
+#Get a list of date objects and sort them
+#Usses bubble sort
+def sort_dates(dates):
+    length = len(dates)
+
+    for i in range(length):
+        for j in range(0, length-i-1):
+
+            j_month = int(dates[j].get_month())
+            j_plus_month = int(dates[j+1].get_month())
+            j_day = int(dates[j].get_day())
+            j_plus_day = int(dates[j+1].get_day())
+            #If they are on the same month(string comparing them is fine)
+            #Check the days
+            if j_month == j_plus_month:
+                if j_day > j_plus_day:
+                    dates[j]= dates[j+1]
+                    dates[j+1] = dates[j]
+                    print(f'Changed {dates[j].get_full_date()} with {dates[j+1].get_full_date()}')
+            #Else, if the j+1 month is bigger, swap them
+            elif j_month > j_plus_month:
+                dates[j]= dates[j+1]
+                dates[j+1] = dates[j]
 
 """Random Utilities"""
 
@@ -99,9 +123,39 @@ def is_date(string):
     day = '([1-9]|[0-2][0-9]|30|31)'
     month = '(1[0-2])|(0?[1-9])'
     time = '(0?[0-9]|1[0-9]|[2][0-3]):([0-5][0-9])'
+    time2 = 'morning|noon|night|day|'
     pattern = day+'[]\/]'+month+'[(]'+time+'-'+time+'[)]'
-    result = re.search(pattern, string)
-    return result
+    pattern2 = day+'[]\/]'+month+'[(]'+time2+'[)]'
+    time_is_word = False
+    first_flag = False
+    second_flag = False
+    first_flag = re.search(pattern, string)
+    #Check if the time was entered as a word
+
+    if first_flag is None:
+        time_is_word = re.search(pattern2, string)
+        if time_is_word:
+            result = True
+            return result, time_is_word
+
+    #Also check if the end time is bigger than the start time.
+    if first_flag and not time_is_word: #If its a valid date
+        date, start_time, end_time = split_date(string)
+        s_list = start_time.split(":")
+        e_list = end_time.split(":")
+        s_obj = TimeObj(int(s_list[0]), int(s_list[1]))
+        e_obj = TimeObj(int(e_list[0]), int(e_list[1]))
+
+        time_obj = time_diff(s_obj, e_obj)
+        if time_obj.get_hour() < 0:
+            #Then the start time was bigger that the end time
+            second_flag = False
+        else:
+            second_flag = True
+
+    #AND to make sure that the check passes only if both flags are true
+    result = first_flag and second_flag
+    return result, time_is_word
 
 """Tools for files"""
 #Counts the lines of a file
@@ -145,7 +199,6 @@ def get_users_dates(author):
                 continue
             else:
                 users_line = row
-                print(f'The user was found in row {i+1}')
                 #Exit the loop after the user is found
                 user_found = True
 
@@ -179,7 +232,6 @@ def get_users_dates(author):
 def confirm_change(author, date_list):
     #Call the get users date command.
     users_dates, exit_code, message = get_users_dates(author)
-    print(message)
 
     found_list = []
     #We need the user to exist. So only exit codes 0, 1
@@ -192,7 +244,7 @@ def confirm_change(author, date_list):
                     date_found = True
             found_list.append(date_found)
 
-    else if exit_code == 1:
+    elif exit_code == 1:
         for date in date_list:
             found_list.append(False)
     else:
