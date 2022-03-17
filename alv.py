@@ -9,7 +9,8 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
-client = commands.Bot(command_prefix='!')
+intents = discord.Intents.all()
+client = commands.Bot(command_prefix='!', intents=intents)
 client.remove_command('help')
 #Global variables for the file name and size
 
@@ -26,8 +27,16 @@ async def on_ready():
         f'{guild.name}(id: {guild.id})'
     )
 
-    members = '\n - '.join([member.name for member in guild.members])
-    print(f'Guild Members:\n - {members}')
+    print("Guild Members:")
+    for member in guild.members:
+        print(member)
+
+    '''channel = client.get_channel(931601808701395016) #bot commands channel
+    await channel.send("Επειδή θέλω, όχι επειδή μου το είπες")
+    with open('my_image.jpeg', 'rb') as f:
+        picture = discord.File(f)
+        await channel.send(file=picture)'''
+
 
 initial_extensions = []
 
