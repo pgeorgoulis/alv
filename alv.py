@@ -1,6 +1,7 @@
 
 # bot.py
 import os
+import random
 import discord
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -37,7 +38,6 @@ async def on_ready():
         picture = discord.File(f)
         await channel.send(file=picture)'''
 
-
 initial_extensions = []
 
 for filename in os.listdir('./cogs'):
@@ -47,5 +47,12 @@ for filename in os.listdir('./cogs'):
 if __name__ == '__main__':
     for extension in initial_extensions:
         client.load_extension(extension)
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        strings = ["how about no", "no.", "I shall not","Um... yeah, no", "Δεν θα μου πεις τι να κάνω", "Επειδή θέλω, όχι επειδή μου το είπες"]
+        await ctx.send(random.choice(strings))
+
 
 client.run(TOKEN)
