@@ -1,4 +1,4 @@
-from t import Treno
+from timeObj import TimeObj
 
 class Date():
     #Take three strings and initialize a date
@@ -10,9 +10,9 @@ class Date():
 
         #split the time to hours and minutes
         s_list = start.split(":")
-        self.start_time = Treno(int(s_list[0]), int(s_list[1]))
+        self.start_time = TimeObj(int(s_list[0]), int(s_list[1]))
         e_list = end.split(":")
-        self.end_time = Treno(int(e_list[0]), int(e_list[1]))
+        self.end_time = TimeObj(int(e_list[0]), int(e_list[1]))
 
 
     def get_day(self):
