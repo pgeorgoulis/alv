@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import MissingPermissions
 
 class Admin(commands.Cog):
 
@@ -15,7 +16,7 @@ class Admin(commands.Cog):
         await ctx.send("Messages deleted")
 
     @delete.error
-    async def find_meeting_error(self, ctx, error):
+    async def delete_error(self, ctx, error):
         if isinstance(error, MissingPermissions):
             await ctx.send("This command is only available to sigma males")
         else:
