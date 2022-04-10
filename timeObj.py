@@ -1,6 +1,5 @@
 class TimeObj():
     #Takes an integer as an hour and another one as minutes
-    ## TODO: Change the file and the class name to something more appropriate
     def __init__(self, hour, minutes):
         self.hour = hour
         self.minutes = minutes
@@ -17,3 +16,8 @@ class TimeObj():
             minutes_str = str(self.minutes)
         string = str(self.hour)+":"+minutes_str
         return string
+
+    #Return a time integer. Maximum value: 24*60 = 1440
+    #Base 60: The number of minites since midnight
+    def time_to_base60(self):
+        return self.minutes + (self.hour * 60)
