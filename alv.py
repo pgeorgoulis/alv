@@ -51,7 +51,14 @@ if __name__ == '__main__':
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        strings = ["how about no", "no.", "I shall not","Um... yeah, no", "Δεν θα μου πεις τι να κάνω", "Επειδή θέλω, όχι επειδή μου το είπες"]
+        strings = [
+            "how about no",
+            "no.",
+            "I shall not",
+            "Um... yeah, no",
+            "Δεν θα μου πεις τι να κάνω",
+            "Επειδή θέλω, όχι επειδή μου το είπες",
+        ]
         await ctx.send(random.choice(strings))
 
 
