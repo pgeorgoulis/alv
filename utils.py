@@ -24,18 +24,6 @@ def split_date(string):
     start_time, end_time = split_time(times)
     return day, start_time, end_time
 
-#takes a list of dates and parses it to day and time. Then, it adds the
-#day to a dictionary as the key and a list of two time objects as the value
-def date_parser(list_dates):
-    dictionary = {}
-    for date in list_dates:
-        #parse the date and asign it to the dictionary
-        date, start_time, end_time = split_date(date)
-        date_obj = Date(date, start_time, end_time)
-        times_list = [date_obj.get_start_time(), date_obj.get_end_time()]
-        dictionary[date_obj.get_day()] = times_list
-    return dictionary
-
 #Gets a list of Time objects and returns the smallest time
 def min_time(time_list):
     min_obj = time_list[0]
