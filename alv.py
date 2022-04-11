@@ -56,10 +56,31 @@ async def on_command_error(ctx, error):
             "no.",
             "I shall not",
             "Um... yeah, no",
+            "I don't think so",
             "Δεν θα μου πεις τι να κάνω",
+            "no u"
             "Επειδή θέλω, όχι επειδή μου το είπες",
         ]
         await ctx.send(random.choice(strings))
+
+@client.event
+async def on_message(message):
+    if client.user.mentioned_in(message):
+        pictures = [
+        "ancient.jpg",
+        "almighty.png",
+        "metal_jacket.gif",
+        "shapiro.gif",
+        "up.gif"
+        ]
+        pic_name = random.choice(pictures)
+        dir = os.path.dirname(os.path.realpath('__file__'))
+        pic_path = "memes/"+pic_name
+        full_path = os.path.join(dir, pic_path)
+        with open(full_path, 'rb') as f:
+            picture = discord.File(f)
+            await message.channel.send(file=picture)
+    await client.process_commands(message)
 
 
 client.run(TOKEN)
