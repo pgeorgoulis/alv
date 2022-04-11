@@ -88,6 +88,12 @@ class Find_meeting(commands.Cog):
             common_keys.intersection_update(set(dic.keys()))
 
         print(common_keys)
+        #Find the true final dates and times for each user by popping the
+        #ones that are not in common_keys
+        for d in final_dates:
+            for key in list(d.keys()):
+                if key not in common_keys:
+                    d.pop(key)
 
 
     @find_meeting.error
