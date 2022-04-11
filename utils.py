@@ -88,7 +88,7 @@ def time_diff(time1, time2):
 def sort_dates(dates):
     length = len(dates)
 
-    for i in range(length):
+    for i in range(length-1):
         for j in range(0, length-i-1):
 
             j_month = int(dates[j].get_month())
@@ -97,15 +97,15 @@ def sort_dates(dates):
             j_plus_day = int(dates[j+1].get_day())
             #If they are on the same month(string comparing them is fine)
             #Check the days
+
             if j_month == j_plus_month:
                 if j_day > j_plus_day:
-                    dates[j]= dates[j+1]
-                    dates[j+1] = dates[j]
-                    print(f'Changed {dates[j].get_full_date()} with {dates[j+1].get_full_date()}')
+                    dates[j], dates[j+1]= dates[j+1], dates[j]
             #Else, if the j+1 month is bigger, swap them
             elif j_month > j_plus_month:
-                dates[j]= dates[j+1]
-                dates[j+1] = dates[j]
+                dates[j], dates[j+1]= dates[j+1], dates[j]
+
+    return dates
 
 """Random Utilities"""
 
