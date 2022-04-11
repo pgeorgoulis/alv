@@ -19,5 +19,5 @@ class TimeObj():
 
     #Return a time integer. Maximum value: 24*60 = 1440
     #Base 60: The number of minites since midnight
-    def time_to_base60(self):
+    def base60(self):
         return self.minutes + (self.hour * 60)
