@@ -13,7 +13,7 @@ class Find_meeting(commands.Cog):
 
     #This function gets called every time the find_meeting does.
     #It deletes from the file all the dates that have passed
-    def purge(self, channel_users):
+    def purge_dates(self, channel_users):
         print(f'The users in this channel are: {channel_users}')
 
         cur_day = date.today().day
@@ -51,9 +51,44 @@ class Find_meeting(commands.Cog):
             channel_users.append(str(m))
         #Remove the bots name from the list
         channel_users.remove("Alv#3487")
-        self.purge(channel_users)
+        self.purge_dates(channel_users)
 
         #Fetch the dates for all the users
+        final_dates = []
+        for user in channel_users:
+            date_dictionary = {}
+            temp, exit_code, message = utils.get_users_dates(user)
+            #if an error occured
+            if exit_code !=0:
+                await ctx.send(message)
+                return
+            #Create a dictionary with keys the date and value a time list for that date
+            #For each date, if it already exists add its times to the existing date
+            #If it does not add it as a new to the Dictionary
+            #Finally, add the dictionary of each user in a list representing the csv
+            #fine in an itterable format.
+            dictionary = {}
+            for entry in temp:
+                date = entry.get_day()+"-"+entry.get_month()
+                if date in dictionary:
+                    old_times = dictionary[date]
+                    new_time = (entry.get_start_time().base60(), entry.get_end_time().base60())
+                    old_times.append(new_time)
+                else:
+                    #Tupple of 2 elements inside a time list for that date with possible multiple entries
+                    time_list = [(entry.get_start_time().base60(), entry.get_end_time().base60())]
+                    dictionary[date] = time_list
+            print(dictionary)
+            final_dates.append(dictionary)
+
+        #By now all the users dates are in a dictionary in the final_dates
+
+        common_keys = set(final_dates[0].keys())
+        for dic in final_dates[1:]:
+            common_keys.intersection_update(set(dic.keys()))
+
+        print(common_keys)
+
 
     @find_meeting.error
     async def find_meeting_error(self, ctx, error):
