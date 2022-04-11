@@ -58,8 +58,8 @@ async def on_command_error(ctx, error):
             "Um... yeah, no",
             "I don't think so",
             "Δεν θα μου πεις τι να κάνω",
-            "no u"
-            "Επειδή θέλω, όχι επειδή μου το είπες",
+            "no u",
+            "Επειδή θέλω, όχι επειδή μου το είπες"
         ]
         await ctx.send(random.choice(strings))
 
@@ -71,7 +71,10 @@ async def on_message(message):
         "almighty.png",
         "metal_jacket.gif",
         "shapiro.gif",
-        "up.gif"
+        "up.gif",
+        "hello_there.gif",
+        "hello_there.gif",
+        "hello_there.gif" #more chances of the hello there gif.
         ]
         pic_name = random.choice(pictures)
         dir = os.path.dirname(os.path.realpath('__file__'))
