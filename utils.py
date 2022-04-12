@@ -8,6 +8,9 @@ file_name = "dates.csv"
 
 
 """Date manipulation"""
+def base60_to_str(minutes):
+    base100_mins =  minutes+minutes//60*40
+    return f"{base100_mins//100:02}:{base100_mins%100:02}"
 #Take a time frame string (12:15-4:00) and split it to two seperate times
 def split_time(string):
     result = string.split("-")
