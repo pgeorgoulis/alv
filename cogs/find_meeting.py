@@ -58,6 +58,7 @@ class Find_meeting(commands.Cog):
         for user in channel_users:
             date_dictionary = {}
             temp, exit_code, message = utils.get_users_dates(user)
+            temp = utils.sort_dates(temp)
             #if an error occured
             if exit_code !=0:
                 await ctx.send(message)
@@ -78,7 +79,6 @@ class Find_meeting(commands.Cog):
                     #Tupple of 2 elements inside a time list for that date with possible multiple entries
                     time_list = [(entry.get_start_time().base60(), entry.get_end_time().base60())]
                     dictionary[date] = time_list
-            print(dictionary)
             final_dates.append(dictionary)
 
         #By now all the users dates are in a dictionary in the final_dates
@@ -87,14 +87,52 @@ class Find_meeting(commands.Cog):
         for dic in final_dates[1:]:
             common_keys.intersection_update(set(dic.keys()))
 
-        print(common_keys)
+        print(f'The common keys are: {common_keys}')
         #Find the true final dates and times for each user by popping the
         #ones that are not in common_keys
+        #probably unnecesary
         for d in final_dates:
             for key in list(d.keys()):
                 if key not in common_keys:
                     d.pop(key)
+        print(f'The final dates dictionary after removing everything else contains: {final_dates}')
+        meetings = []
+        for key in common_keys:
+            users_times = []
+            for dic in final_dates:
+                #find the busy hours
+                time_list = dic[key]
+                busy_time = [True] * 1439
+                for (s,e) in time_list:
+                    for i in range(s,e):
+                        #All the remaiing True fieds will be unusable busy time slots
+                        busy_time[i] = False
 
+                users_times.append(busy_time)
+
+            free_time = [True]*1439
+            #for every users times
+            for busy_mins in users_times:
+                for i in range(0,1439):
+                    if busy_mins[i] is True:
+                        free_time[i] = False
+
+            result = list()
+            openInterval = False
+            beg, end = 0, 0
+            for i, slot in enumerate(free_time):
+                if not openInterval and slot:
+                    openInterval = True
+                    beg = i
+                elif openInterval and not slot:
+                    openInterval = False
+                    end = i
+                    beg = utils.base60_to_str(beg)
+                    end = utils.base60_to_str(end)
+                    result.append((beg, end))
+
+            print(f'For the date {key} these are the available meeting times: ')
+            print(result)
 
     @find_meeting.error
     async def find_meeting_error(self, ctx, error):
