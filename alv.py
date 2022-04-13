@@ -1,6 +1,7 @@
 
 # bot.py
 import os
+import re
 import random
 import discord
 from dotenv import load_dotenv
@@ -65,6 +66,10 @@ async def on_command_error(ctx, error):
 
 @client.event
 async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.mention_everyone:
+        return
     if client.user.mentioned_in(message):
         pictures = [
         "ancient.jpg",
