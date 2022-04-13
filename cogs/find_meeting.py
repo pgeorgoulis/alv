@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
+from discord.ext.commands import MissingRequiredArgument
 from discord.utils import get
-from datetime import date
+from datetime import datetime
+from date import Date
 import csv
 import utils
 
@@ -14,10 +16,8 @@ class Find_meeting(commands.Cog):
     #This function gets called every time the find_meeting does.
     #It deletes from the file all the dates that have passed
     def purge_dates(self, channel_users):
-        print(f'The users in this channel are: {channel_users}')
-
-        cur_day = date.today().day
-        cur_month = date.today().month
+        cur_day = datetime.today().day
+        cur_month = datetime.today().month
 
         new_file = []
         for user in channel_users:
@@ -42,9 +42,9 @@ class Find_meeting(commands.Cog):
             writer.writerows(new_file)
 
 
-    @commands.command()
+    @commands.command(pass_context = True)
     @commands.has_permissions(administrator=True)   #Raises some subclass CommandError
-    async def find_meeting(self, ctx):
+    async def find_meeting(self, ctx, duration):
 
         channel_users = []
         for m in ctx.channel.members:
@@ -70,7 +70,7 @@ class Find_meeting(commands.Cog):
             #fine in an itterable format.
             dictionary = {}
             for entry in temp:
-                date = entry.get_day()+"-"+entry.get_month()
+                date = entry.get_day()+"/"+entry.get_month()
                 if date in dictionary:
                     old_times = dictionary[date]
                     new_time = (entry.get_start_time().base60(), entry.get_end_time().base60())
@@ -86,8 +86,6 @@ class Find_meeting(commands.Cog):
         common_keys = set(final_dates[0].keys())
         for dic in final_dates[1:]:
             common_keys.intersection_update(set(dic.keys()))
-
-        print(f'The common keys are: {common_keys}')
         #Find the true final dates and times for each user by popping the
         #ones that are not in common_keys
         #probably unnecesary
@@ -95,7 +93,6 @@ class Find_meeting(commands.Cog):
             for key in list(d.keys()):
                 if key not in common_keys:
                     d.pop(key)
-        print(f'The final dates dictionary after removing everything else contains: {final_dates}')
         meetings = []
         for key in common_keys:
             users_times = []
@@ -129,15 +126,38 @@ class Find_meeting(commands.Cog):
                     end = i
                     beg = utils.base60_to_str(beg)
                     end = utils.base60_to_str(end)
-                    result.append((beg, end))
+                    #Create the meeting date
+                    dateObj = Date(key, beg, end)
+                    time_diffObj = utils.time_diff(dateObj.get_start_time(), dateObj.get_end_time())
+                    if time_diffObj.get_hour() >= int(duration):
+                        meetings.append(dateObj)
 
-            print(f'For the date {key} these are the available meeting times: ')
-            print(result)
+        if len(meetings) == 0:
+            await ctx.send("No session for you guys")
+        else:
+            uild = ctx.guild
+            meetings = utils.sort_dates(meetings)
+            for meeting in meetings:
+                #Get all the fiends needed
+                year = datetime.today().year
+                month = int(meeting.get_month())
+                day = int(meeting.get_day())
+                start = meeting.get_start_time().time_to_string()
+                end = meeting.get_end_time().time_to_string()
+                string = datetime(year, month, day).strftime("%A")+" "+str(day)+"/"+str(month)
+
+                embed = discord.Embed(title="Available Date", colour=0x87CEEB)
+                embed.add_field(name="Date", value=string, inline=False)
+                embed.add_field(name="Start time", value=start, inline=True)
+                embed.add_field(name="End time", value=end, inline=True)
+                await ctx.send(embed=embed)
 
     @find_meeting.error
     async def find_meeting_error(self, ctx, error):
         if isinstance(error, MissingPermissions):
-            await ctx.send("This command is only available to sigma males")
+            await ctx.send("Error: This command is only available to sigma males")
+        elif isinstance(error, MissingRequiredArgument):
+            await ctx.send("Error: find_meeting needs a time duration argument")
         else:
             raise error
 
