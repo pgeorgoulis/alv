@@ -35,9 +35,9 @@ class Help(commands.Cog):
     async def remove(self, ctx):
         em = discord.Embed(title="Remove", description="Removes one or more dates", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!remove", inline=False)
-        em.add_field(name="", value=("After calling !remove the user will be shown every date he has entered "
+        em.add_field(name="How to use", value=("After calling !remove the user will be shown every date he has entered "
                                     "and will be asked to write the index number of each one he wishes to remove\n"
-                                    "**Syntax** <integer> OR <integer>,<integer>,...,<integer>"))
+                                 "\n*Syntax* <integer> OR <integer>,<integer>,...,<integer>"))
         await ctx.send(embed=em)
 
     @help.command()
@@ -45,7 +45,7 @@ class Help(commands.Cog):
         em = discord.Embed(title="Find Meeting", description="Finds and prints the common dates and hours of all the members in the channel the command was called", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!find_meeting <integer>", inline=False)
         em.add_field(name="<integer>", value="A number indicating how many hours the meeting should last")
-        em.add_field(name="Permissions", value="This command is only available to users with administrator role")
+        em.add_field(name="Permissions", value="This command is only available to users with the administrator role")
         await ctx.send(embed=em)
 
     @help.command()
@@ -53,7 +53,7 @@ class Help(commands.Cog):
         em = discord.Embed(title="Delete", description="Deletes a number of messages in the channel that its called in", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!delete <integer>", inline=False)
         em.add_field(name="<integer>", value="A number indicating how many messages should be deleted")
-        em.add_field(name="Permissions", value="This command is only available to users with administrator role")
+        em.add_field(name="Permissions", value="This command is only available to users with the administrator role")
         await ctx.send(embed=em)
 
 
