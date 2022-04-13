@@ -133,10 +133,14 @@ class Find_meeting(commands.Cog):
                         meetings.append(dateObj)
 
         if len(meetings) == 0:
-            await ctx.send("No session for you guys")
+            await ctx.send("Looks like there won't be a session this week.")
         else:
             uild = ctx.guild
             meetings = utils.sort_dates(meetings)
+            if len(meetings) == 1:
+                await ctx.send("I found the following date:")
+            else:
+                await ctx.send("I found the following dates:")
             for meeting in meetings:
                 #Get all the fiends needed
                 year = datetime.today().year
