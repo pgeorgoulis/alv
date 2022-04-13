@@ -17,7 +17,7 @@ class Help(commands.Cog):
     @help.command()
     async def add(self, ctx):
         em = discord.Embed(title="Add", description="Adds a date available for a session", color=ctx.author.color)
-        em.add_field(name="**Syntax**", value="!add <date> (<time> - <time>) OR !add <date> (<string>)", inline=False)
+        em.add_field(name="**Syntax**", value="!add to call the command, <date> (<time> - <time>) OR <date> (<string>) for each date entered. To enter multiple dates, seperate them with \n (enter)", inline=False)
         em.add_field(name="<date>", value="Each <date> must follow the format of dd/mm i.e 25/12", inline=False)
         em.add_field(name="<time>", value="Each <time> must follow the format of hh:mm i.e 12:56 (24h format)", inline=False)
         em.add_field(name="<string>", value=("The available values for <string> are: day, morning, noon, night. "
