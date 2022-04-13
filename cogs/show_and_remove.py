@@ -23,6 +23,7 @@ class Show_and_remove(commands.Cog):
         #Only if the error code is 0 print the dates. Else, there aren't any dates to print
         final_string = ""
         if exit_code == 0:
+            dates_list = utils.sort_dates(dates_list)
             #Initialize the counter
             i=1
             for date in dates_list:
@@ -46,6 +47,7 @@ class Show_and_remove(commands.Cog):
         final_string = ""
         if exit_code == 0:
             #Initialize the counter
+            dates_list = utils.sort_dates(dates_list)
             i=1
             for date in dates_list:
                 temp = str(i)+". "+ date.get_full_date() +"\n"
@@ -76,6 +78,8 @@ class Show_and_remove(commands.Cog):
                         sanitized_list.append(num)
                     else:
                         await ctx.send(f'Error: Number {num} does not exist in the list above')
+                else:
+                    await ctx.send(f'Error: Entry {num} not an integer')
 
             #Find the dates that need to be removed
             remove_dates = []
