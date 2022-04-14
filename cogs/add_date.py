@@ -70,9 +70,9 @@ class Add_date(commands.Cog):
                 if found_list[i]:
                     #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
                     #Each date that was not added should be sent on its own.
-                    await ctx.send(f'Date {dates_list[i].get_full_date()} was added succesfully')
+                    await ctx.reply(f'Date {dates_list[i].get_full_date()} was added succesfully')
                 else:
-                    await ctx.send(f'Error: Date {dates_list[i].get_full_date()} was not added')
+                    await ctx.reply(f'Error: Date {dates_list[i].get_full_date()} was not added')
 
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
