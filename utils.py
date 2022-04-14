@@ -111,26 +111,26 @@ def is_number(string):
     return result
 #Get a string and check if it matches the date format
 def is_date(string):
-    day = '([1-9]|[0-2][0-9]|30|31)'
-    month = '(1[0-2])|(0?[1-9])'
-    time = '(0?[0-9]|1[0-9]|[2][0-3]):([0-5][0-9])'
-    time2 = 'morning|noon|night|day|'
-    pattern = day+'[]\/]'+month+'[(]'+time+'-'+time+'[)]'
-    pattern2 = day+'[]\/]'+month+'[(]'+time2+'[)]'
-    time_is_word = False
-    first_flag = False
-    second_flag = False
-    first_flag = re.search(pattern, string)
-    #Check if the time was entered as a word
+    day = '([1-9]|[0-2][0-9]|30|31|)'
+    month = '(1[012]|0?[1-9])'
+    time1 = '((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))'
+    time2 = '(morning|noon|night|day)'
+    time = "("+time1+'-'+time1+")"+'|'+time2
+    pattern = '^('+day+'[\/]'+month+'[(]'+time+'[)]'+')'
 
-    if first_flag is None:
-        time_is_word = re.search(pattern2, string)
-        if time_is_word:
-            result = True
-            return result, time_is_word
+
+
+
+    time_is_word = False
+    second_pat_fl = False
+
+    match = False
+
+    match = re.search(pattern, string)
+    print(match)
 
     #Also check if the end time is bigger than the start time.
-    if first_flag and not time_is_word: #If its a valid date
+    if match and not time_is_word: #If its a valid date
         date, start_time, end_time = split_date(string)
         s_list = start_time.split(":")
         e_list = end_time.split(":")
@@ -140,12 +140,12 @@ def is_date(string):
         time_obj = time_diff(s_obj, e_obj)
         if time_obj.get_hour() < 0:
             #Then the start time was bigger that the end time
-            second_flag = False
+            second_pat_fl = False
         else:
-            second_flag = True
+            second_pat_fl = True
 
     #AND to make sure that the check passes only if both flags are true
-    result = first_flag and second_flag
+    result = match and second_pat_fl
     return result, time_is_word
 
 """Tools for files"""
