@@ -15,7 +15,8 @@ class Find_meeting(commands.Cog):
         self.client = client
 
     #This function gets called every time the find_meeting does.
-    #It deletes from the file all the dates that have passed
+    #Gets a list of users and removes from the dates.csv file any of their dates that have passed
+    #When the new dates are rewritten into the file they should be sorted
     def purge_dates(self, channel_users):
         cur_day = datetime.today().day
         cur_month = datetime.today().month
@@ -26,6 +27,7 @@ class Find_meeting(commands.Cog):
             temp_list = []
             temp_list.append(user)
             if exit == 0:
+                user_dates = utils.sort_dates(user_dates)
                 for entry in users_dates:
                     month = int(entry.get_month())
                     day = int(entry.get_day())
@@ -47,6 +49,7 @@ class Find_meeting(commands.Cog):
     @commands.has_permissions(administrator=True)   #Raises some subclass CommandError
     async def find_meeting(self, ctx, duration):
 
+        #Get the users that are in this channel, and purge any old dates they might have
         channel_users = []
         for m in ctx.channel.members:
             channel_users.append(str(m))
@@ -66,9 +69,9 @@ class Find_meeting(commands.Cog):
                 return
             #Create a dictionary with keys the date and value a time list for that date
             #For each date, if it already exists add its times to the existing date
-            #If it does not add it as a new to the Dictionary
+            #If it doesn't, add it as a new to the Dictionary
             #Finally, add the dictionary of each user in a list representing the csv
-            #fine in an itterable format.
+            #file in an itterable format.
             dictionary = {}
             for entry in temp:
                 date = entry.get_day()+"/"+entry.get_month()
@@ -87,17 +90,20 @@ class Find_meeting(commands.Cog):
         common_keys = set(final_dates[0].keys())
         for dic in final_dates[1:]:
             common_keys.intersection_update(set(dic.keys()))
-        #Find the true final dates and times for each user by popping the
-        #ones that are not in common_keys
-        #probably unnecesary
+        #After finding all the common days(keys of the dictionary), remove all the other
+        #dates fror the list of dictionaries.  
         for d in final_dates:
             for key in list(d.keys()):
                 if key not in common_keys:
                     d.pop(key)
+        await ctx.send("Test. Common keys: ")
+        await ctx.send(common_keys)
         meetings = []
         for key in common_keys:
             users_times = []
             for dic in final_dates:
+                await ctx.send("lol dic: ")
+                await ctx.send(dic)
                 #find the busy hours
                 time_list = dic[key]
                 busy_time = [True] * 1439
@@ -114,14 +120,14 @@ class Find_meeting(commands.Cog):
                 for i in range(0,1439):
                     if busy_mins[i] is True:
                         free_time[i] = False
-
-            result = list()
+            await ctx.send(free_time)
             openInterval = False
             beg, end = 0, 0
             for i, slot in enumerate(free_time):
                 if not openInterval and slot:
                     openInterval = True
                     beg = i
+                    await ctx.send("mpike")
                 elif openInterval and not slot:
                     openInterval = False
                     end = i
@@ -130,15 +136,17 @@ class Find_meeting(commands.Cog):
                     #Create the meeting date
                     dateObj = Date(key, beg, end)
                     time_diffObj = utils.time_diff(dateObj.get_start_time(), dateObj.get_end_time())
+                    await ctx.send("Test. Date found: ")
+                    await ctx.send(time_diffObj.get_full_date())
                     if time_diffObj.get_hour() >= int(duration):
                         meetings.append(dateObj)
 
         if len(meetings) == 0:
             await ctx.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
-            content = get("https://meme-api.herokuapp.com/gimme/dndmemes").text
-            data = json.loads(content,)
-            meme = discord.Embed(title=f"{data['title']}", Color = discord.Color.random()).set_image(url=f"{data['url']}")
-            await ctx.send(embed=meme)
+            #content = get("https://meme-api.herokuapp.com/gimme/dndmemes").text
+            #data = json.loads(content,)
+            #meme = discord.Embed(title=f"{data['title']}", Color = discord.Color.random()).set_image(url=f"{data['url']}")
+            #await ctx.send(embed=meme)
         else:
             uild = ctx.guild
             meetings = utils.sort_dates(meetings)
