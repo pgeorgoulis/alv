@@ -1,4 +1,3 @@
-
 # bot.py
 import os
 import re
@@ -60,6 +59,7 @@ async def on_command_error(ctx, error):
             "I don't think so",
             "Δεν θα μου πεις τι να κάνω",
             "no u",
+            "this ain't it, chief",
             "Επειδή θέλω, όχι επειδή μου το είπες"
         ]
         await ctx.send(random.choice(strings))
@@ -77,6 +77,11 @@ async def on_message(message):
         "metal_jacket.gif",
         "shapiro.gif",
         "up.gif",
+        "spongebob.jpg",
+        "spongebob.jpg",
+        "spongebob.jpg",
+        "hello_there.gif",
+        "hello_there.gif",
         "hello_there.gif",
         "hello_there.gif",
         "hello_there.gif" #more chances of the hello there gif.
