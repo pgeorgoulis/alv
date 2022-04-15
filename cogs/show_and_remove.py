@@ -120,11 +120,11 @@ class Show_and_remove(commands.Cog):
             found_list, exit_code = utils.confirm_change(author, remove_dates)
             for i in range(len(found_list)):
                 if found_list[i]:
-                    await ctx.send(f'Error: Date {remove_dates[i].get_full_date()} was not removed')
+                    await ctx.reply(f'Error: Date {remove_dates[i].get_full_date()} was not removed')
                 else:
                     #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
                     #Each date that was not added should be sent on its own.
-                    await ctx.send(f'Date {remove_dates[i].get_full_date()} was removed succesfully')
+                    await ctx.reply(f'Date {remove_dates[i].get_full_date()} was removed succesfully')
 
 
         except asyncio.TimeoutError:
