@@ -117,6 +117,7 @@ class Show_and_remove(commands.Cog):
                 writer.writerows(lines)
 
             #Check if the dates were added succesfully
+            #TODO if the date was not removed it probably isnt a date
             found_list, exit_code = utils.confirm_change(author, remove_dates)
             for i in range(len(found_list)):
                 if found_list[i]:
