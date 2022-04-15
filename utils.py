@@ -236,6 +236,7 @@ def confirm_change(author, date_list):
         for date in date_list:
             found_list.append(False)
     else:
+        pass
         #The user was not found in the file so return some error code
         #TODO raise an error here
 
