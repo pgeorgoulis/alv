@@ -113,40 +113,40 @@ def is_number(string):
 def is_date(string):
     day = '([1-9]|[0-2][0-9]|30|31|)'
     month = '(1[012]|0?[1-9])'
-    time1 = '((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))'
-    time2 = '(morning|noon|night|day)'
-    time = "("+time1+'-'+time1+")"+'|'+time2
-    pattern = '^('+day+'[\/]'+month+'[(]'+time+'[)]'+')'
-
-
-
-
+    hour_min = '((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))'
+    time_str = '((morning)|(noon)|(night)|(day))'
+    time = hour_min+'[-]'+hour_min
+    date = '^('+day+'[\/]'+month+'[(]'+time+'[)])'
+    date_v2 = '^('+day+'[\/]'+month+'[(]'+time_str+'[)])'
+    valid_date = False
     time_is_word = False
-    second_pat_fl = False
 
-    match = False
+    #Search for the first pattern
+    match = re.search(r"^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[-]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[)])", string)
+    match_2 = re.search("^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((morning)|(noon)|(night)|(day))[)])", string)
 
-    match = re.search(pattern, string)
-    print(match)
+    if match is not None:
+        valid_date = True #Transpose it to bool flag
+    else:
+        #Else, search for the second pattern
+        if match_2:
+            valid_date = True
+            time_is_word = True
 
     #Also check if the end time is bigger than the start time.
-    if match and not time_is_word: #If its a valid date
+    if valid_date and not time_is_word:
         date, start_time, end_time = split_date(string)
         s_list = start_time.split(":")
         e_list = end_time.split(":")
         s_obj = TimeObj(int(s_list[0]), int(s_list[1]))
         e_obj = TimeObj(int(e_list[0]), int(e_list[1]))
-
         time_obj = time_diff(s_obj, e_obj)
+
         if time_obj.get_hour() < 0:
             #Then the start time was bigger that the end time
-            second_pat_fl = False
-        else:
-            second_pat_fl = True
+            valid_date = False
 
-    #AND to make sure that the check passes only if both flags are true
-    result = match and second_pat_fl
-    return result, time_is_word
+    return valid_date, time_is_word
 
 """Tools for files"""
 #Counts the lines of a file
@@ -222,7 +222,6 @@ def get_users_dates(author):
 def confirm_change(author, date_list):
     #Call the get users date command.
     users_dates, exit_code, message = get_users_dates(author)
-
     found_list = []
     #We need the user to exist. So only exit codes 0, 1
     if exit_code == 0:
@@ -233,12 +232,12 @@ def confirm_change(author, date_list):
                 if date.get_full_date() == u_date.get_full_date():
                     date_found = True
             found_list.append(date_found)
-
     elif exit_code == 1:
         for date in date_list:
             found_list.append(False)
     else:
-        pass #The user was not found in the file so return some error code
+        #The user was not found in the file so return some error code
+        #TODO raise an error here
 
     return found_list, exit_code
 
