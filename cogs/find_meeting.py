@@ -27,7 +27,7 @@ class Find_meeting(commands.Cog):
             temp_list = []
             temp_list.append(user)
             if exit == 0:
-                user_dates = utils.sort_dates(user_dates)
+                users_dates = utils.sort_dates(users_dates)
                 for entry in users_dates:
                     month = int(entry.get_month())
                     day = int(entry.get_day())
@@ -39,6 +39,15 @@ class Find_meeting(commands.Cog):
             #TODO replace all the writting to the file here and in the show_and_remove
             #with a seperate function. Also, optimize this solution
             new_file.append(temp_list)
+
+        #Read the file and add all the users that werent in channel_users back into the file. 
+        with open(utils.get_filename(), 'r', newline="") as csvfile:
+            reader = csv.reader(csvfile, delimiter=",")
+            for row in reader:            
+                user_name = row[0]
+                if user_name not in channel_users:
+                    new_file.append(row)
+
 
         with open(utils.get_filename(), 'w') as csvfile:
             writer = csv.writer(csvfile)
