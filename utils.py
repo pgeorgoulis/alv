@@ -251,8 +251,8 @@ def writeFile(author, dates):
         #Load the whole file in lines list
         for row in reader:
             name = row[0]
-            #rows.append(row)
             if author != name:
+                #This is not the user we are looking for. Add him to the list
                 lines.append(row)
             else:
                 #if the user entered multiple dates
@@ -263,21 +263,22 @@ def writeFile(author, dates):
                     lines.append(row)
                     found_flag = True
                     #TODO might need to remove the break
-                    break
+                    continue
                 else:
-                    #its only one dates
-                    row.append(dates)
-                    lines.append(row)
-                    found_flag = True
-                    break
+                    print("Error in writeFile. Data type is not list")
 
         #If the user does not exist already
         if not found_flag:
             #then add the new user
             new_line = []
             new_line.append(author)
-            new_line.append(dates)
-
+            if type(dates) is list:
+                #get the line and append it at the end
+                for string in dates:
+                    new_line.append(string)
+            else:
+                #its only one date
+                new_line.append(dates)
             lines.append(new_line)
 
     #Rewrite the new file
