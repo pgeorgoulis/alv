@@ -8,7 +8,7 @@ from discord.ext import commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+#GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix='!', intents=intents)
@@ -19,19 +19,8 @@ client.remove_command('help')
 #Events
 @client.event
 async def on_ready():
-    for guild in client.guilds:
-        if guild.name == GUILD:
-            break
 
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
-
-    print("Guild Members:")
-    for member in guild.members:
-        print(member)
-
+    print("Getting ready...")
     '''channel = client.get_channel(931601808701395016) #bot commands channel
     await channel.send("Επειδή θέλω, όχι επειδή μου το είπες")
     with open('my_image.jpeg', 'rb') as f:
@@ -72,14 +61,17 @@ async def on_message(message):
         return
     if client.user.mentioned_in(message):
         pictures = [
-        "ancient.jpg",
-        "almighty.png",
         "metal_jacket.gif",
         "shapiro.gif",
-        "up.gif",
+        "shapiro.gif",
+        "shapiro.gif",
+        "shapiro.gif",
         "spongebob.jpg",
         "spongebob.jpg",
         "spongebob.jpg",
+        "hello_there.gif",
+        "hello_there.gif",
+        "hello_there.gif",
         "hello_there.gif",
         "hello_there.gif",
         "hello_there.gif",
@@ -88,7 +80,7 @@ async def on_message(message):
         ]
         pic_name = random.choice(pictures)
         dir = os.path.dirname(os.path.realpath('__file__'))
-        pic_path = "memes/"+pic_name
+        pic_path = "pics/"+pic_name
         full_path = os.path.join(dir, pic_path)
         with open(full_path, 'rb') as f:
             picture = discord.File(f)
