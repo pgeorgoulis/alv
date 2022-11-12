@@ -17,7 +17,7 @@ class Add_date(commands.Cog):
     #Use add date to add a available date as a user
     @commands.command()
     async def add(self, ctx):
-        await ctx.send('Enter the available days: ')
+        await ctx.send('Enter your desired dates, you must')
 
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel

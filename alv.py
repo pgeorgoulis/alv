@@ -20,12 +20,14 @@ client.remove_command('help')
 @client.event
 async def on_ready():
 
-    print("Getting ready...")
-    '''channel = client.get_channel(931601808701395016) #bot commands channel
-    await channel.send("Επειδή θέλω, όχι επειδή μου το είπες")
-    with open('my_image.jpeg', 'rb') as f:
-        picture = discord.File(f)
-        await channel.send(file=picture)'''
+    print("[+] Alv is running...")
+    allowed_mentions = discord.AllowedMentions(everyone=True)
+    channel = client.get_channel(931601762169806901) #general
+    #await channel.send("@everyone Alv is now online.", allowed_mentions=allowed_mentions)
+    #await channel.send("Επειδή θέλω, όχι επειδή μου το είπες")
+    #with open('index.jpeg', 'rb') as f:
+        #picture = discord.File(f)
+        #await channel.send(file=picture)
 
 initial_extensions = []
 

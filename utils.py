@@ -168,7 +168,7 @@ def get_filename():
 
 
 #Get a name as input and return a list with the date objects the user has entered
-# returns 1. The date list, 2. Exit code, 3. Exit message
+# returns 3 elements: 1. The date list, 2. Exit code, 3. Exit message
 #Exit codes:
 # -1 initial code. Meands no message was assigned
 #  0 User found and he has entered dates
