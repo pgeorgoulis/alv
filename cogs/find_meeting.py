@@ -136,8 +136,25 @@ class Find_meeting(commands.Cog):
                     if time_diffObj.get_hour() >= int(duration):
                         meetings.append(dateObj)
 
+        #Print some stats about the dates using formated_dates, the set of dictionaries from above
+        length = len(common_keys)
+        if length == 0:
+            string = "0 common days found"
+        elif length == 1:
+            string = "1 common day found:\n"
+        else:
+            string = str(length) + " common days found:\n"
+            common_dates_string = ""
+            for date in common_keys:
+                common_dates_string = common_dates_string + date + "\n"
+            string = string + common_dates_string
+
+        #Create the embed with the stats and send it at the end
+        em = discord.Embed(title="Statistics", color =0x0CC10C)        
+        em.add_field(name="Common Days", value=string, inline=False)
+
+
         if len(meetings) == 0:
-            await ctx.send("No session found")
             await ctx.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
             content = get("https://meme-api.herokuapp.com/gimme/dndmemes").text
             data = json.loads(content,)
@@ -159,11 +176,14 @@ class Find_meeting(commands.Cog):
                 end = meeting.get_end_time().time_to_string()
                 string = datetime(year, month, day).strftime("%A")+" "+str(day)+"/"+str(month)
 
-                embed = discord.Embed(title="Available Date", colour=0x87CEEB)
+                embed = discord.Embed(title="Possible Session", colour=0x87CEEB)
                 embed.add_field(name="Date", value=string, inline=False)
-                embed.add_field(name="Start time", value=start, inline=True)
-                embed.add_field(name="End time", value=end, inline=True)
+                embed.add_field(name="From", value=start, inline=True)
+                embed.add_field(name="Until", value=end, inline=True)
                 await ctx.send(embed=embed)
+        
+        #Send the statistics last every time
+        await ctx.send(embed=em)
 
     @find_meeting.error
     async def find_meeting_error(self, ctx, error):
