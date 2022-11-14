@@ -141,7 +141,10 @@ class Find_meeting(commands.Cog):
         if length == 0:
             string = "0 common days found"
         elif length == 1:
-            string = "1 common day found:\n"
+            string = "1 common day found:\n" + common_keys
+            #TODO find a workaround without the loop to get the only one set element
+            for date in common_keys:
+                string = string + date
         else:
             string = str(length) + " common days found:\n"
             common_dates_string = ""
