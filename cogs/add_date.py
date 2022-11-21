@@ -71,9 +71,9 @@ class Add_date(commands.Cog):
                         if found_list[0]:
                             #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
                             #Each date that was not added should be sent on its own.
-                            await ctx.reply(f'Date {obj.get_full_date()} was added succesfully')
+                            await ctx.reply(f'Date {obj.get_full_date()} was added succesfully', ephemeral = True)
                         else:
-                            await ctx.reply(f'Error: Date {obj.get_full_date()} was not added')
+                            await ctx.reply(f'Error: Date {obj.get_full_date()} was not added', ephemeral = True)
                     else:
                         await ctx.reply(f'Error: Idk') #TODO: change the error name
 
