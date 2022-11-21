@@ -1,8 +1,5 @@
 import discord
 from discord.ext import commands
-from date import Date
-import asyncio
-import csv
 import utils
 
 
@@ -11,7 +8,7 @@ class Statistics(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(name = 'stats', pass_context = True)
+    @commands.command()
     async def stats(self, ctx):
 
         channel_users = []
