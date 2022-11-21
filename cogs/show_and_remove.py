@@ -125,7 +125,7 @@ class Show_and_remove(commands.Cog):
                 else:
                     #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
                     #Each date that was not added should be sent on its own.
-                    await ctx.reply(f'Date {remove_dates[i].get_full_date()} was removed succesfully')
+                    await ctx.reply(f'Date {remove_dates[i].get_full_date()} was removed succesfully', ephemeral = True)
 
 
         except asyncio.TimeoutError:
