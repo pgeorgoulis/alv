@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
 
@@ -13,7 +12,7 @@ class Admin(commands.Cog):
     async def delete(self, ctx, number):
         num = int(number)
         await ctx.channel.purge(limit=num+1)
-        await ctx.send("Messages deleted")
+        await ctx.send("Messages deleted", delete_after = 5)
 
     @delete.error
     async def delete_error(self, ctx, error):
