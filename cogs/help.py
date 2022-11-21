@@ -11,7 +11,7 @@ class Help(commands.Cog):
         embed = discord.Embed(title="Help", description="Use !help <command> for extended information on a command", color = ctx.author.color)
         embed.add_field(name="<command>", value="The following commands are available at this time", inline=False)
         embed.add_field(name="Session scheduling", value="add, remove, show, find_meeting, stats")
-        embed.add_field(name="Moderation", value="delete")
+        embed.add_field(name="Moderation", value="delete, pics")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -38,6 +38,12 @@ class Help(commands.Cog):
     async def show(self, ctx):
         em = discord.Embed(title="Show", description="Shows a sorted list of every date the user has entered so far", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!show", inline=False)
+        await ctx.send(embed=em)
+
+    @help.command()
+    async def pics(self, ctx):
+        em = discord.Embed(title="Pics", description="Shows all the images sent to a channel", color=ctx.author.color)
+        em.add_field(name="**Syntax**", value="!pics", inline=False)
         await ctx.send(embed=em)
 
     @help.command()
