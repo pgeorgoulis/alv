@@ -21,9 +21,9 @@ class Pictures_in_Channel(commands.Cog):
                         pic_counter += 1
                         pic_list.append(atm)
 
-        thread = await ctx.channel.create_thread(name="Pics in the channel",
+        thread = await ctx.channel.create_thread(name="Channel images",
                                                     type = discord.ChannelType.public_thread)
-        await thread.send("This message is sent to the created thread!")
+        await thread.send("Behold! My pics.")
         i = 0
         for pic in pic_list:
             await thread.send(pic.url)
