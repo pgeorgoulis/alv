@@ -10,8 +10,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 #GUILD = os.getenv('DISCORD_GUILD')
 
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.all()
 client = commands.Bot(command_prefix='!', intents=intents)
 client.remove_command('help')
 #Global variables for the file name and size
@@ -19,7 +18,7 @@ client.remove_command('help')
 async def load_extensions():
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
-            await client.load_extension(f'cogs.{filename[:-3]}') #:-3] remove the .py
+            await client.load_extension(f"cogs.{filename[:-3]}") #:-3] remove the .py
 
 async def main():
     async with client:
