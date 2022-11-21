@@ -132,5 +132,5 @@ class Show_and_remove(commands.Cog):
             await ctx.send("Sorry, you didn't reply in time")
 
 
-def setup(client):
-    client.add_cog(Show_and_remove(client))
+async def setup(client):
+    await client.add_cog(Show_and_remove(client))

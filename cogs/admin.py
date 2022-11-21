@@ -22,5 +22,5 @@ class Admin(commands.Cog):
         else:
             raise error
 
-def setup(client):
-    client.add_cog(Admin(client))
+async def setup(client):
+    await client.add_cog(Admin(client))

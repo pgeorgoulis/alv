@@ -197,5 +197,5 @@ class Find_meeting(commands.Cog):
         else:
             raise error
 
-def setup(client):
-    client.add_cog(Find_meeting(client))
+async def setup(client):
+    await client.add_cog(Find_meeting(client))
