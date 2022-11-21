@@ -87,5 +87,5 @@ class Add_date(commands.Cog):
             await ctx.send("Sorry, you didn't reply in time")
 
 
-def setup(client):
-    client.add_cog(Add_date(client))
+async def setup(client):
+    await client.add_cog(Add_date(client))

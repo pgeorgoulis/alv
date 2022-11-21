@@ -11,7 +11,7 @@ class Statistics(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(pass_context = True)
+    @commands.command(name = 'stats', pass_context = True)
     async def stats(self, ctx):
 
         channel_users = []
@@ -40,5 +40,5 @@ class Statistics(commands.Cog):
         embed.add_field(name="Last Date", value=last_date_string, inline=False)
         await ctx.send(embed=embed)
 
-def setup(client):
-    client.add_cog(Statistics(client))
+async def setup(client):
+    await client.add_cog(Statistics(client))

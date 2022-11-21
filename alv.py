@@ -1,6 +1,6 @@
 # bot.py
 import os
-import re
+import asyncio
 import random
 import discord
 from dotenv import load_dotenv
@@ -10,34 +10,36 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 #GUILD = os.getenv('DISCORD_GUILD')
 
-intents = discord.Intents.all()
+intents = discord.Intents.default()
+intents.message_content = True
 client = commands.Bot(command_prefix='!', intents=intents)
 client.remove_command('help')
 #Global variables for the file name and size
+
+async def load_extensions():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            await client.load_extension(f'cogs.{filename[:-3]}') #:-3] remove the .py
+
+async def main():
+    async with client:
+        await load_extensions()
+        await client.start(TOKEN)
 
 
 #Events
 @client.event
 async def on_ready():
+    print(f"discord.py {discord.__version__}\n")
 
     print("[+] Alv is running...")
     allowed_mentions = discord.AllowedMentions(everyone=True)
     channel = client.get_channel(931601762169806901) #general
-    await channel.send("@everyone Alv is now online.", allowed_mentions=allowed_mentions)
+    #await channel.send("@everyone Alv is now online.", allowed_mentions=allowed_mentions)
     #await channel.send("Επειδή θέλω, όχι επειδή μου το είπες")
     #with open('index.jpeg', 'rb') as f:
         #picture = discord.File(f)
         #await channel.send(file=picture)
-
-initial_extensions = []
-
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        initial_extensions.append("cogs."+filename[:-3]) #:-3] remove the .py
-
-if __name__ == '__main__':
-    for extension in initial_extensions:
-        client.load_extension(extension)
 
 @client.event
 async def on_command_error(ctx, error):
@@ -89,5 +91,4 @@ async def on_message(message):
             await message.channel.send(file=picture)
     await client.process_commands(message)
 
-
-client.run(TOKEN)
+asyncio.run(main())
