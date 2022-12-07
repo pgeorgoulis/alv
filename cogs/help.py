@@ -11,7 +11,7 @@ class Help(commands.Cog):
         embed = discord.Embed(title="Help", description="Use !help <command> for extended information on a command", color = ctx.author.color)
         embed.add_field(name="<command>", value="The following commands are available at this time", inline=False)
         embed.add_field(name="Session scheduling", value="add, remove, show, find_meeting, stats")
-        embed.add_field(name="Moderation", value="delete, pics")
+        embed.add_field(name="Miscellaneous", value="delete, pics, poll")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -38,6 +38,13 @@ class Help(commands.Cog):
     async def show(self, ctx):
         em = discord.Embed(title="Show", description="Shows a sorted list of every date the user has entered so far", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!show", inline=False)
+        await ctx.send(embed=em)
+    
+    @help.command()
+    async def poll(self, ctx):
+        em = discord.Embed(title="Poll", description="Creates a poll with up to 9 choices.", color=ctx.author.color)
+        em.add_field(name="**Syntax**", value="You type the command name followed by the question or the title of the poll in quotes (\") and each of the available options separated by space", inline=False)
+        em.add_field(name="Example", value="!poll \"Title of the poll\" first_option second_option third_option", inline=False)
         await ctx.send(embed=em)
 
     @help.command()
