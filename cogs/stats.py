@@ -33,7 +33,9 @@ class Statistics(commands.Cog):
                 string = user[0:-5] + ": "+ last_day+"/"+last_month+"\n"
             last_date_string = last_date_string + string
 
-        embed = discord.Embed(title="Statistics", description="Stats about each user's entered dates", color =0x0CC10C)        
+        embed = discord.Embed(title="Statistics", 
+                                description="Stats about each user's entered dates", 
+                                color =0x0CC10C)        
         embed.add_field(name="Last Date", value=last_date_string, inline=False)
         await ctx.send(embed=embed)
 
