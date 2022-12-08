@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import csv
 import re
@@ -286,3 +287,44 @@ def writeFile(author, dates):
         writer = csv.writer(csvfile)
         writer.writerows(lines)
         return
+
+
+
+
+#This function gets called every time the find_meeting does.
+#Gets a list of users and removes from the dates.csv file any of their dates that have passed
+#When the new dates are rewritten into the file they should be sorted
+def purge_dates(channel_users):
+    cur_day = datetime.today().day
+    cur_month = datetime.today().month
+
+    new_file = []
+    for user in channel_users:
+        users_dates, exit, message = get_users_dates(user)
+        temp_list = []
+        temp_list.append(user)
+        if exit == 0:
+            users_dates = sort_dates(users_dates)
+            for entry in users_dates:
+                month = int(entry.get_month())
+                day = int(entry.get_day())
+                if month == cur_month:
+                    if day > cur_day:
+                        temp_list.append(entry.get_full_date())
+                elif month > cur_month:
+                    temp_list.append(entry.get_full_date())
+        #TODO replace all the writting to the file here and in the show_and_remove with a seperate function. Also, optimize this solution
+        new_file.append(temp_list)
+
+    #Read the file and add all the users that werent in channel_users back into the file. 
+    with open(get_filename(), 'r', newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        for row in reader:            
+            user_name = row[0]
+            if user_name not in channel_users:
+                new_file.append(row)
+
+
+    with open(get_filename(), 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(new_file)
