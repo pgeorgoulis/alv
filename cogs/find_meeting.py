@@ -1,4 +1,5 @@
 from discord import Embed
+import discord
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
 from discord.ext.commands import MissingRequiredArgument
@@ -100,10 +101,7 @@ class Find_meeting(commands.Cog):
 
         if len(meetings) == 0:
             await ctx.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
-            content = get("https://meme-api.herokuapp.com/gimme/dndmemes").text
-            data = json.loads(content,)
-            meme = Embed(title=f"{data['title']}", Color = discord.Color.random()).set_image(url=f"{data['url']}")
-            await ctx.send(embed=meme)
+            await ctx.invoke(self.client.get_command('meme') )
         else:
             uild = ctx.guild
             meetings = utils.sort_dates(meetings)
