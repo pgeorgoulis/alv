@@ -11,7 +11,7 @@ class Help(commands.Cog):
         embed = discord.Embed(title="Help", description="Use !help <command> for extended information on a command", color = ctx.author.color)
         embed.add_field(name="<command>", value="The following commands are available at this time", inline=False)
         embed.add_field(name="Session scheduling", value="add, remove, show, find_meeting, stats")
-        embed.add_field(name="Miscellaneous", value="delete, pics, poll")
+        embed.add_field(name="Miscellaneous", value="delete, pics, poll, meme")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -37,6 +37,12 @@ class Help(commands.Cog):
     @help.command()
     async def show(self, ctx):
         em = discord.Embed(title="Show", description="Shows a sorted list of every date the user has entered so far", color=ctx.author.color)
+        em.add_field(name="**Syntax**", value="!show", inline=False)
+        await ctx.send(embed=em)
+    
+    @help.command()
+    async def meme(self, ctx):
+        em = discord.Embed(title="Meme", description="Posts an image from r/dndmemes. It's a random selection from the top 35 posts from last week", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!show", inline=False)
         await ctx.send(embed=em)
     
