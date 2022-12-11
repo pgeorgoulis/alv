@@ -1,13 +1,11 @@
-import aiohttp
-from discord import AllowedMentions, Embed
+from discord import Embed
 from discord.ext.commands import Cog
 from discord.ext.commands import command
-
 import random
 from dotenv import load_dotenv
 import asyncpraw
 import os
-import pprint
+
 
 class Meme(Cog):
     def __init__(self, client):
@@ -30,17 +28,18 @@ class Meme(Cog):
                                     username=username,)
 
         sub = await reddit.subreddit("dndmemes")
-        top = sub.top(limit=20)
+        top = sub.top("week",limit=35)
         all_memes = []
         async for submission in top:
             all_memes.append(submission)
         
         random_meme = random.choice(all_memes)
+
         #TODO there is probably a better way to do this
         if random_meme.post_hint != 'image':
+            #Confirm that the post is an image and not text, gif or a video
             while random_meme.post_hint != 'image':
                 random_meme = random.choice(all_memes)
-
 
         title = random_meme.title
         url=random_meme.url
@@ -50,6 +49,3 @@ class Meme(Cog):
 
 async def setup(client):
     await client.add_cog(Meme(client))
-
-
-                #async with cs.get('https://www.reddit.com/r/dankmemes/new.json?sort=hot') as r:
