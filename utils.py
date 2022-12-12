@@ -309,7 +309,7 @@ def purge_dates(channel_users):
                 month = int(entry.get_month())
                 day = int(entry.get_day())
                 if month == cur_month:
-                    if day > cur_day:
+                    if day >= cur_day:
                         temp_list.append(entry.get_full_date())
                 elif month > cur_month:
                     temp_list.append(entry.get_full_date())
