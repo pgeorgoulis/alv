@@ -103,9 +103,9 @@ class Add_date(commands.Cog):
                 i=0
                 for date in list_to_confirm:
                     if found_list[i]:
-                        string = f'Date {obj.get_full_date()} was added succesfully'
+                        string = f'Date {date.get_full_date()} was added succesfully'
                     else:
-                        string = f'Error: Date {obj.get_full_date()} was not added. Please try again'
+                        string = f'Error: Date {date.get_full_date()} was not added. Please try again'
                     message_list.append(string)
                     i+=1
             else:
