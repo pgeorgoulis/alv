@@ -26,9 +26,9 @@ class Help(commands.Cog):
         em.add_field(name="<time>", value="This field represents a set of hours and minutes. Each <time> must follow the format of *hh:mm i.e 12:56 (24h format)*", inline=False)
         em.add_field(name="<string>", value=("This field represents a pre-set time frame. The available values for <string> are: *day*, *morning*, *noon*, *night*. "
                                             "\nEach string has an assigned start and end time."
-                                            "\nday ->\t(9:00-23:59)\nmorning ->\t(11:30-15:30)\nnoon ->\t(15:30-20:30)\nnight ->\t(20:30-23:59)"), inline=False)
+                                            "\nday ->\t(9:00-24:00)\nmorning ->\t(11:30-15:30)\nnoon ->\t(15:30-20:30)\nnight ->\t(20:30-24:00)"), inline=False)
         em.add_field(name="Examples", value=("Some correct date examples are:\n"
-                                              "\n7/11(9:00-23:59)\n"
+                                              "\n7/11(9:00-24:00)\n"
                                               "8/11(noon)\n"
                                               "9/11(13:00-18:45)\n" 
                                               "Each date must be separated with ENTER from the next one."), inline=False)
