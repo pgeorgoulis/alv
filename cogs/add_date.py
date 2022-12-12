@@ -1,8 +1,6 @@
-import discord
 from discord.ext import commands
 from date import Date
 import asyncio
-import csv
 import utils
 from discord.ext import commands
 
@@ -26,7 +24,10 @@ class Add_date(commands.Cog):
             msg = await self.client.wait_for("message", check=check, timeout=180)
             input_list = msg.content.lower().split("\n")
             author = str(msg.author)
-            dates_list = []
+
+            list_to_write = []
+            list_to_confirm = []
+            message_list = []
 
             #Create a date object for every date in the input string
             for entry in input_list:
@@ -46,10 +47,10 @@ class Add_date(commands.Cog):
                             end_time = "20:30"
                         elif time == "night":
                             start_time = "20:30"
-                            end_time = "23:59"
+                            end_time = "24:00"
                         elif time =="day":
                             start_time = "9:00"
-                            end_time = "23:59"
+                            end_time = "24:00"
 
                         obj = Date(day, start_time, end_time)
                         #dates_list.append(obj)
@@ -60,27 +61,29 @@ class Add_date(commands.Cog):
                         #dates_list.append(obj)
 
                     #Test. If its valid, add it to the file
-                    list1 = []
-                    list2 = []
-                    list1.append(obj.get_full_date())
-                    list2.append(obj)
-                    utils.writeFile(author, list1)
-                    found_list, exit_code = utils.confirm_change(author, list2)
-
-                    if exit_code == 0:
-                        if found_list[0]:
-                            #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
-                            #Each date that was not added should be sent on its own.
-                            await ctx.reply(f'Date {obj.get_full_date()} was added succesfully', ephemeral = True)
-                        else:
-                            await ctx.reply(f'Error: Date {obj.get_full_date()} was not added', ephemeral = True)
-                    else:
-                        await ctx.reply(f'Error: Idk') #TODO: change the error name
-
-
+                    list_to_write.append(obj.get_full_date())
+                    list_to_confirm.append(obj)
                 else:
-                    await ctx.send("Error: Wrong format of data. Use !help to find the correct one")
+                    string = f'Error: {entry} is not a valid date. Use !help add to find the correct format'
+                    message_list.append(string)
 
+            #Write the dates, check to confirm changes, print the apropriate messages
+            utils.writeFile(author, list_to_write)
+            found_list, exit_code = utils.confirm_change(author, list_to_confirm)
+
+            if exit_code == 0:
+                i=0
+                for date in list_to_confirm:
+                    if found_list[i]:
+                        string = f'Date {obj.get_full_date()} was added succesfully'
+                    else:
+                        string = f'Error: Date {obj.get_full_date()} was not added. Please try again'
+                    message_list.append(string)
+                    i+=1
+            else:
+                await ctx.reply(f'Error: Error in confirm message')
+            
+            await ctx.reply("\n".join(message_list))
 
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
