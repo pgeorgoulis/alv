@@ -55,8 +55,10 @@ class Help(commands.Cog):
 
     @help.command()
     async def pics(self, ctx):
-        em = discord.Embed(title="Pics", description="Shows all the images sent to a channel", color=ctx.author.color)
-        em.add_field(name="**Syntax**", value="!pics", inline=False)
+        em = discord.Embed(title="Pics", description="Creates a thread and posts there all the chanel images. Alternatively, posts all the images sent on the last <x> messages", color=ctx.author.color)
+        em.add_field(title="Aliases", value="pic, pictures, get_pics, get_pictures", inline=False)
+        em.add_field(name="**Syntax**", value="!pics or !pics <integer>", inline=False)
+        em.add_field(name="Example", value="`!pics 10` \nwill show all the images in the last 10 messages")
         await ctx.send(embed=em)
 
     @help.command()
@@ -76,10 +78,11 @@ class Help(commands.Cog):
 
     @help.command()
     async def find_meeting(self, ctx):
-        em = discord.Embed(title="Find Meeting", description="Finds and prints the common dates and hours of all the members in the channel the command was called", color=ctx.author.color)
-        em.add_field(name="**Syntax**", value="!find_meeting <integer>", inline=False)
+        em = discord.Embed(title="Find Meeting", description="Finds the common dates and hours of all the members in the current chanel", color=ctx.author.color)
+        em.add_field(name="Aliases", value="find", inline=False)
+        em.add_field(name="**Syntax**", value="!find_meeting OR !find_meeting <integer>", inline=False)
         em.add_field(name="<integer>", value="A number indicating how many hours the meeting should last")
-        em.add_field(name="Permissions", value="This command is only available to users with the administrator role")
+        #em.add_field(name="Permissions", value="This command is only available to users with the administrator role")
         await ctx.send(embed=em)
 
     @help.command()
