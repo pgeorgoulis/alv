@@ -16,7 +16,7 @@ class Pictures_in_Channel(Cog):
             if utils.is_number(limit):
                 limit = int(limit)
             else:
-                await ctx.send("Error: Given limit is wrong, command will proceed with the default")
+                await ctx.send("Warning: Given limit value is not valid. The command will proceed with the default limit value")
                 limit = 10000
 
         counter = 0
