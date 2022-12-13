@@ -112,18 +112,18 @@ def is_number(string):
     return result
 #Get a string and check if it matches the date format
 def is_date(string):
-    day = '([1-9]|[0-2][0-9]|30|31|)'
-    month = '(1[012]|0?[1-9])'
-    hour_min = '((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))'
-    time_str = '((morning)|(noon)|(night)|(day))'
-    time = hour_min+'[-]'+hour_min
-    date = '^('+day+'[\/]'+month+'[(]'+time+'[)])'
-    date_v2 = '^('+day+'[\/]'+month+'[(]'+time_str+'[)])'
+    #day = '([1-9]|[0-2][0-9]|30|31|)'
+    #month = '(1[012]|0?[1-9])'
+    #hour_min = '((0?[0-9]|1[0-9]|[2][0-3]|[24])[:]([0-5][0-9]))'
+    #time_str = '((morning)|(noon)|(night)|(day))'
+    #time = hour_min+'[-]'+hour_min
+    #date = '^('+day+'[\/]'+month+'[(]'+time+'[)])'
+    #date_v2 = '^('+day+'[\/]'+month+'[(]'+time_str+'[)])'
     valid_date = False
     time_is_word = False
 
     #Search for the first pattern
-    match = re.search(r"^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[-]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[)])", string)
+    match = re.search(r"^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[-]((?:24\:00)|((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9])))[)])", string)
     match_2 = re.search("^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((morning)|(noon)|(night)|(day))[)])", string)
 
     if match is not None:
