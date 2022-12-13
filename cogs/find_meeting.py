@@ -17,7 +17,7 @@ class Find_meeting(commands.Cog):
 
     @commands.command(pass_context = True)
     @commands.has_permissions(administrator=True)   #Raises some subclass CommandError #TODO catch all the admin privilage errors and print the same message (pehaps global exception filter)
-    async def find_meeting(self, ctx, duration):
+    async def find_meeting(self, ctx, duration = None):
 
         #Purge the dates from the channel users
         channel_users = []
@@ -95,8 +95,16 @@ class Find_meeting(commands.Cog):
                     #Create the meeting date
                     dateObj = Date(key, beg, end)
                     time_diffObj = utils.time_diff(dateObj.get_start_time(), dateObj.get_end_time())
-                    if time_diffObj.get_hour() >= int(duration):
+                    if duration == None:
                         meetings.append(dateObj)
+                    elif duration != None and utils.is_number(duration):
+                        if time_diffObj.get_hour() >= int(duration):
+                            meetings.append(dateObj)
+                    else:
+                        await ctx.send("Warning: Given meeting duration is not valid.The command will proceed without a duration value")
+                        meetings.append(dateObj)
+
+
 
 
         if len(meetings) == 0:
