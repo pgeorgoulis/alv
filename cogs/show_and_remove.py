@@ -89,10 +89,9 @@ class Show_and_remove(commands.Cog):
             #And remove them
             for r_date in remove_dates:
                 for date in dates_list:
-                    #TODO see if comparing objects works
                     if r_date.get_full_date() == date.get_full_date():
                         dates_list.remove(date)
-                        #TODO probably needs break here
+                        break
 
             #Write to the file
             #TODO needs impovement, make this function one the the utils write file function
@@ -116,17 +115,17 @@ class Show_and_remove(commands.Cog):
                 writer = csv.writer(csvfile)
                 writer.writerows(lines)
 
-            #Check if the dates were added succesfully
-            #TODO if the date was not removed it probably isnt a date
+            #Check if the dates were deleted succesfully
             found_list, exit_code = utils.confirm_change(author, remove_dates)
+            message_list = []
             for i in range(len(found_list)):
                 if found_list[i]:
-                    await ctx.reply(f'Error: Date {remove_dates[i].get_full_date()} was not removed')
+                    string = f'Error: Date {remove_dates[i].get_full_date()} was not removed'
                 else:
-                    #TODO maybe send a collective message for the possitives to avoid spam. Maybe with .join
-                    #Each date that was not added should be sent on its own.
-                    await ctx.reply(f'Date {remove_dates[i].get_full_date()} was removed succesfully', ephemeral = True)
+                    string = f'Date {remove_dates[i].get_full_date()} was removed succesfully'
+                message_list.append(string)
 
+            await ctx.reply('\n'.join(message_list))
 
         except asyncio.TimeoutError:
             await ctx.send("Sorry, you didn't reply in time")
