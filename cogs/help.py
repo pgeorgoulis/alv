@@ -42,7 +42,7 @@ class Help(commands.Cog):
     
     @help.command()
     async def meme(self, ctx):
-        em = discord.Embed(title="Meme", description="Posts an image from r/dndmemes. It's a random selection from the top 35 posts from last week", color=ctx.author.color)
+        em = discord.Embed(title="Meme", description="Posts a random image from the top 35 posts on r/dndmemes this week", color=ctx.author.color)
         em.add_field(name="**Syntax**", value="!show", inline=False)
         await ctx.send(embed=em)
     
