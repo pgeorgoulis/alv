@@ -15,8 +15,8 @@ class Find_meeting(commands.Cog):
         self.client = client
 
 
-    @commands.command(pass_context = True)
-    @commands.has_permissions(administrator=True)   #Raises some subclass CommandError #TODO catch all the admin privilage errors and print the same message (pehaps global exception filter)
+    @commands.command(name = "find_meeting", aliases=["find", "meeting"], pass_context = True)
+    #@commands.has_permissions(administrator=True)   #Raises some subclass CommandError #TODO catch all the admin privilage errors and print the same message (pehaps global exception filter)
     async def find_meeting(self, ctx, duration = None):
 
         #Purge the dates from the channel users
