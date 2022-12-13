@@ -66,7 +66,7 @@ class Find_meeting(commands.Cog):
             for dic in formated_dates:
                 #find the busy hours
                 time_list = dic.get(key)
-                busy_time = [True] * 1440
+                busy_time = [True] * 1441
                 for (s,e) in time_list:
                     for i in range(s,e):
                         #All the remaiing True fieds will be unusable busy time slots
@@ -76,9 +76,9 @@ class Find_meeting(commands.Cog):
 
             
             #for every users times
-            free_time = [True]*1440
+            free_time = [True]*1441
             for busy_mins in busy_times_list:
-                for i in range(0,1440):
+                for i in range(0,1441):
                     if busy_mins[i] is True:
                         free_time[i] = False
             openInterval = False
