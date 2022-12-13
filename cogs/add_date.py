@@ -71,17 +71,27 @@ class Add_date(commands.Cog):
                                 #Check if it's the same month but also save time in comparisons
                                 same_month = bool(int(written_date.get_month()) == int(obj.get_month()))
                                 if same_month:
-                                    wr_start = written_date.get_start_time().get_hour()
-                                    wr_end = written_date.get_end_time().get_hour()
-                                    obj_start = obj.get_start_time().get_hour()
-                                    obj_end = obj.get_end_time().get_hour()
+                                    #existing start and end times
+                                    existing_start = written_date.get_start_time().get_hour()
+                                    existing_end = written_date.get_end_time().get_hour()
+                                    #current object waiting to be written
+                                    new_start = obj.get_start_time().get_hour()
+                                    new_end = obj.get_end_time().get_hour()
                                     #Conditions to check if there is overlap between the time periods
-                                    overlap_one = bool(obj_start < wr_start and obj_end > wr_end)
-                                    overlap_two = bool(obj_start < wr_end and obj_start > wr_start)
-                                    overlap_three = bool(obj_start == wr_start or obj_end == wr_end)
+                                    overlap_one = bool(new_start < existing_start and new_end > existing_end)
+                                    overlap_two = bool(new_start < existing_end and new_start > existing_start)
+                                    overlap_three = bool(new_start == existing_start or new_end == existing_end)
                                     if overlap_one or overlap_two or overlap_three:
                                         overlap_flag = True
                                         break
+                                    if new_start == existing_end:
+                                        if obj.get_start_time().get_minutes() <= written_date.get_start_time().get_minutes():
+                                            overlap_flag = True
+                                            break
+                                    if new_end == existing_start:
+                                        if obj.get_end_time().get_minutes() >= written_date.get_start_time().get_minutes():
+                                            overlap_flag = True
+                                            break
  
                     if overlap_flag: 
                         string = f'Error: Date {obj.get_full_date()} overlaps with existing date {written_date.get_full_date()}'
