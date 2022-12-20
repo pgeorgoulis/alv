@@ -111,7 +111,7 @@ class Find_meeting(commands.Cog):
             await ctx.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
             await ctx.invoke(self.client.get_command('meme') )
         else:
-            uild = ctx.guild
+            guild = ctx.guild
             meetings = utils.sort_dates(meetings)
             if len(meetings) == 1:
                 await ctx.send("I found the following date:")
