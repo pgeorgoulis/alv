@@ -1,5 +1,6 @@
 from discord.ext import commands
 from date import Date
+from datetime import datetime, timedelta
 import asyncio
 import utils
 from discord.ext import commands
@@ -34,12 +35,33 @@ class Add_date(commands.Cog):
 
             #Create a date object for every date in the input string
             for entry in input_list:
-                date = utils.remove_spaces(entry)
-                valid_date, time_is_word = utils.is_date(date)
+                entry = utils.remove_spaces(entry.lower())
+                valid_date, time_is_word, day_is_word = utils.is_date(entry)
                 if valid_date:
+                    result = entry.split("(")
+                    day = result[0]
+                    if day_is_word:
+                        if day == "today":
+                            date = datetime.today()
+                            m = str(date.month)
+                            d = str(date.day)
+                            day = d+"/"+m
+                        elif day == "tomorrow":
+                            date = datetime.today() + timedelta(days=1)
+                            m = str(date.month)
+                            d = str(date.day)
+                            day = d+"/"+m
+                        else:
+                            for i in range(1,7):
+                                date = datetime.today() + timedelta(days=i)
+                                day_name = date.strftime("%A").lower()
+                                if day_name == day:
+                                    m = str(date.month)
+                                    d = str(date.day)
+                                    day = d+"/"+m
+                                    break
+    
                     if time_is_word:
-                        result = date.split("(")
-                        day = result[0]
                         #remove the last character: )
                         time = result[1].replace(")", "")
                         if time == "morning":
@@ -54,10 +76,12 @@ class Add_date(commands.Cog):
                         elif time =="day":
                             start_time = "9:00"
                             end_time = "24:00"
-                        obj = Date(day, start_time, end_time)
                     else:
-                        attributes = utils.split_date(date)
-                        obj = Date(attributes[0], attributes[1], attributes[2])
+                        attributes = utils.split_date(entry)
+                        start_time = attributes[1]
+                        end_time = attributes[2]
+                    
+                    obj = Date(day, start_time, end_time)
 
                     #Now that obj is created check if obj.time overlaps with another one in the file.
                     #exit code 0 -> Dates were found. exit code 1 -> User was found but he hasn't entered any dates
