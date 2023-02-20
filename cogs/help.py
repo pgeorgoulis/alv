@@ -22,7 +22,7 @@ class Help(commands.Cog):
                                                     "   <date> (<time> - <time>)\n  OR\n    <date> (<string>)\n" 
                                                     "3. Wait for alv to reply to your message confirming the sucessfull addition of the dates\n\n"
                                                     "If you are unsure or you made a mistake you can use the commands !show and !delete to see or change your entries"), inline=False)
-        em.add_field(name="<date>", value="This field represents a day and a month.They must follow the format of *dd/mm i.e 25/2*", inline=False)
+        em.add_field(name="<date>", value="This field represents a day and a month.They must follow the format of *dd/mm i.e 25/2*\n Alternatively, strings such as today, tomorrow, monday, saturday etc can be used", inline=False)
         em.add_field(name="<time>", value="This field represents a set of hours and minutes. Each <time> must follow the format of *hh:mm i.e 12:56 (24h format)*", inline=False)
         em.add_field(name="<string>", value=("This field represents a pre-set time frame. The available values for <string> are: *day*, *morning*, *noon*, *night*. "
                                             "\nEach string has an assigned start and end time."
@@ -30,7 +30,9 @@ class Help(commands.Cog):
         em.add_field(name="Examples", value=("Some correct date examples are:\n"
                                               "\n7/11(9:00-24:00)\n"
                                               "8/11(noon)\n"
-                                              "9/11(13:00-18:45)\n" 
+                                              "9/11(13:00-18:45)\n"
+                                              "tomorrow(noon)\n"
+                                              "Sunday(17:00-23:45)\n"
                                               "Each date must be separated with ENTER from the next one."), inline=False)
         await ctx.send(embed=em)
 
