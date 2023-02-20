@@ -133,18 +133,26 @@ def is_date(string):
     #date_v2 = '^('+day+'[\/]'+month+'[(]'+time_str+'[)])'
     valid_date = False
     time_is_word = False
+    day_is_word = False
 
     #Search for the first pattern
     match = re.search(r"^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[-]((?:24\:00)|((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9])))[)])", string)
     match_2 = re.search("^(([1-9]|[0-2][0-9]|30|31|)[\/](1[012]|0?[1-9])[(]((morning)|(noon)|(night)|(day))[)])", string)
+    match_3 = re.search("^((today)|(tomorrow)|(monday)|(tuesday)|(wednesday)|(thursday)|(friday)|(saturday)|(sunday))[(]((morning)|(noon)|(night)|(day))[)]", string)
+    match_4 = re.search("^((today)|(tomorrow)|(monday)|(tuesday)|(wednesday)|(thursday)|(friday)|(saturday)|(sunday))[(]((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9]))[-]((?:24\:00)|((0?[0-9]|1[0-9]|[2][0-3])[:]([0-5][0-9])))[)]", string)
 
     if match is not None:
         valid_date = True #Transpose it to bool flag
-    else:
-        #Else, search for the second pattern
-        if match_2:
-            valid_date = True
-            time_is_word = True
+    elif match_2:
+        valid_date = True
+        time_is_word = True
+    elif match_3:
+        valid_date = True
+        time_is_word = True
+        day_is_word = True
+    elif match_4:
+        valid_date = True
+        day_is_word = True
 
     #Also check if the end time is bigger than the start time.
     if valid_date and not time_is_word:
@@ -159,7 +167,7 @@ def is_date(string):
             #Then the start time was bigger that the end time
             valid_date = False
 
-    return valid_date, time_is_word
+    return valid_date, time_is_word, day_is_word
 
 """Tools for files"""
 #Counts the lines of a file
