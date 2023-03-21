@@ -1,6 +1,7 @@
 from discord import Embed
 from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord import app_commands
+import discord
 from date import Date
 import utils
 
@@ -10,10 +11,10 @@ class Statistics(Cog):
     def __init__(self, client):
         self.client = client
 
-    @command(name="stats", aliases=["stat", "statistics"])
-    async def stats(self, ctx):
+    @app_commands.command(name="stats", description="Shows information about the users and all their entered dates")
+    async def stats(self, interaction: discord.Interaction):
         channel_users = []
-        for membr in ctx.channel.members:
+        for membr in interaction.channel.members:
             channel_users.append(str(membr))
 
         channel_users.remove("Alv#3487")
@@ -89,7 +90,7 @@ class Statistics(Cog):
         embed.add_field(name="Number of entered Dates", value=date_count, inline=False)
         embed.add_field(name="Common Days", value=common_string, inline=False)
 
-        await ctx.send(embed=embed)
+        await interaction.channel.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(Statistics(client))

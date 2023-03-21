@@ -1,6 +1,7 @@
 from discord import Embed
 from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord import app_commands
+import discord
 import random
 from dotenv import load_dotenv
 import asyncpraw
@@ -11,8 +12,8 @@ class Meme(Cog):
     def __init__(self, client):
         self.client = client
 
-    @command(name="meme")
-    async def mpam(self, ctx):
+    @app_commands.command(name="meme", description="Posts a meme from the r/dndmemes subreddit")
+    async def meme(self, interaction: discord.Interaction):
         load_dotenv()
         
         client_id = os.getenv('CLIENT_ID')
@@ -45,7 +46,7 @@ class Meme(Cog):
         url=random_meme.url
         embed = Embed(title=title, url=url)
         embed.set_image(url=url)
-        await ctx.send(embed=embed)
+        await interaction.channel.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(Meme(client))
