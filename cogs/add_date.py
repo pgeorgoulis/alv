@@ -68,10 +68,10 @@ class Add_date(commands.Cog):
                             start_time = "11:30"
                             end_time = "15:30"
                         elif time == "noon":
-                            start_time = "15:30"
-                            end_time = "20:30"
+                            start_time = "17:00"
+                            end_time = "22:00"
                         elif time == "night":
-                            start_time = "20:30"
+                            start_time = "20:00"
                             end_time = "24:00"
                         elif time =="day":
                             start_time = "9:00"
