@@ -10,7 +10,7 @@ class Help(commands.Cog):
     async def help(self, ctx):
         embed = discord.Embed(title="Help", description="Use !help <command> for extended information on a command", color = ctx.author.color)
         embed.add_field(name="<command>", value="The following commands are available at this time", inline=False)
-        embed.add_field(name="Session scheduling", value="add, remove, show, find_meeting, stats")
+        embed.add_field(name="Session scheduling", value="add, remove, show, find_meeting, oneshot, stats")
         embed.add_field(name="Miscellaneous", value="delete, pics, poll, meme")
         await ctx.send(embed=embed)
 
