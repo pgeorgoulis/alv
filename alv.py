@@ -34,7 +34,7 @@ async def on_ready():
     print("[+] Alv is running...")
     allowed_mentions = discord.AllowedMentions(everyone=True)
     channel = client.get_channel(1057014585388978196) #general
-    await channel.send("@everyone Alv is now online.", allowed_mentions=allowed_mentions)
+    #await channel.send("@everyone Alv is now online.", allowed_mentions=allowed_mentions)
     #await channel.send("Επειδή θέλω, όχι επειδή μου το είπες")
     #with open('index.jpeg', 'rb') as f:
         #picture = discord.File(f)
