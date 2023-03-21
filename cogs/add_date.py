@@ -60,7 +60,16 @@ class Add_date(commands.Cog):
                                     d = str(date.day)
                                     day = d+"/"+m
                                     break
-    
+                    else:
+                        #Remove possible zeroes in front of the dates. For example 02/09(noon) -> 2/9(noon)
+                        date_l = day.split("/")
+                        d = date_l[0]
+                        m = date_l[1]
+                        if d[0] == '0':
+                            d = d[1:]
+                        if m[0] == '0':
+                            m = m[1:]
+                        day = d + "/" + m
                     if time_is_word:
                         #remove the last character: )
                         time = result[1].replace(")", "")
