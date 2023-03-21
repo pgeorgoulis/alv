@@ -110,6 +110,7 @@ class Find_meeting(commands.Cog):
         if len(meetings) == 0:
             await ctx.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
             await ctx.invoke(self.client.get_command('meme') )
+            await ctx.send("You could try using the `!oneshot` command to find the date with the most available party members")
         else:
             guild = ctx.guild
             meetings = utils.sort_dates(meetings)
