@@ -26,7 +26,7 @@ class Help(commands.Cog):
         em.add_field(name="<time>", value="This field represents a set of hours and minutes. Each <time> must follow the format of *hh:mm i.e 12:56 (24h format)*", inline=False)
         em.add_field(name="<string>", value=("This field represents a pre-set time frame. The available values for <string> are: *day*, *morning*, *noon*, *night*. "
                                             "\nEach string has an assigned start and end time."
-                                            "\nday ->\t(9:00-24:00)\nmorning ->\t(11:30-15:30)\nnoon ->\t(15:30-20:30)\nnight ->\t(20:30-24:00)"), inline=False)
+                                            "\nday ->\t(9:00-24:00)\nmorning ->\t(11:30-15:30)\nnoon ->\t(17:00-22:00)\nnight ->\t(20:00-24:00)"), inline=False)
         em.add_field(name="Examples", value=("Some correct date examples are:\n"
                                               "\n7/11(9:00-24:00)\n"
                                               "8/11(noon)\n"
@@ -38,14 +38,14 @@ class Help(commands.Cog):
 
     @help.command()
     async def show(self, ctx):
-        em = discord.Embed(title="Show", description="Shows a sorted list of every date the user has entered so far", color=ctx.author.color)
-        em.add_field(name="**Syntax**", value="!show", inline=False)
+        em = discord.Embed(title="Show", description="Shows a sorted list of every date the user has entered so far. By default it returns the dates of the user who called the command but if given a username it will return those dates instead.", color=ctx.author.color)
+        em.add_field(name="**Syntax**", value="!show or !show <username>", inline=False)
         await ctx.send(embed=em)
     
     @help.command()
     async def meme(self, ctx):
         em = discord.Embed(title="Meme", description="Posts a random image from the top 35 posts on r/dndmemes this week", color=ctx.author.color)
-        em.add_field(name="**Syntax**", value="!show", inline=False)
+        em.add_field(name="**Syntax**", value="!meme", inline=False)
         await ctx.send(embed=em)
     
     @help.command()
@@ -56,13 +56,21 @@ class Help(commands.Cog):
         await ctx.send(embed=em)
 
     @help.command()
-    async def pics(self, ctx):
-        em = discord.Embed(title="Pics", description="Creates a thread and posts there all the chanel images. Alternatively, posts all the images sent on the last <x> messages", color=ctx.author.color)
-        em.add_field(title="Aliases", value="pic, pictures, get_pics, get_pictures", inline=False)
-        em.add_field(name="**Syntax**", value="!pics or !pics <integer>", inline=False)
-        em.add_field(name="Example", value="`!pics 10` \nwill show all the images in the last 10 messages")
+    async def oneshot(self, ctx):
+        em = discord.Embed(title="Oneshot", description="Prints all the dm's available dates and how many members are available for each one of those dates. The Dm is the user calling the command or a valid server member given as input.", color=ctx.author.color)
+        em.add_field(name="**Syntax**", value="!oneshot or !oneshot <username>", inline=False)
+        em.add_field(name="Example", value="!oneshot porf", inline=False)
         await ctx.send(embed=em)
-
+    
+    @help.command()
+    async def pics(self, ctx):
+        em = discord.Embed(title="Pics", description="Creates and posts into a thread all images sent to the current channel. Alternatively, posts all the images sent in the last X messages.", color=ctx.author.color)        
+        em.add_field(name="Aliases", value="pic, pictures, get_pics, get_pictures", inline=False)
+        em.add_field(name="**Syntax", value="!pics or !pics <integer>", inline=False)
+        em.add_field(name="Example", value="!pics 10\n will show all the images in the last 10 messages", inline=False)
+        await ctx.send(embed=em)
+    
+    
     @help.command()
     async def stats(self, ctx):
         em = discord.Embed(title="Stats", description="Shows more information about the users and all the entered dates", color=ctx.author.color)
@@ -75,7 +83,7 @@ class Help(commands.Cog):
         em.add_field(name="**Syntax**", value="!remove", inline=False)
         em.add_field(name="How to use", value=("After calling !remove the user will be shown every date he has entered "
                                     "and will be asked to write the index number of each one he wishes to remove\n"
-                                 "\n*Syntax* <integer> OR <integer>,<integer>,...,<integer>"))
+                                 "\n!remove <integer> OR !remove <integer>,<integer>,...,<integer>"))
         await ctx.send(embed=em)
 
     @help.command()
