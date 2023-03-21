@@ -40,8 +40,6 @@ class Poll(Cog):
 
         message = await interaction.channel.send(embed=embed)
 
-        print(type(message))
-
         for emoji in numbers[:len(options)]:
             await message.add_reaction(emoji)
             
