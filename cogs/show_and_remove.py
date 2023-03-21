@@ -13,9 +13,27 @@ class Show_and_remove(commands.Cog):
 
 
     @commands.command()
-    async def show(self, ctx):
+    async def show(self, ctx, username = None):
 
-        dates_list, exit_code, message = utils.get_users_dates(str(ctx.author))
+        if username == None:
+            user = str(ctx.author)
+        else:
+            for member in ctx.guild.members:
+                if username in str(member).lower():
+                    user = str(member)
+
+        #if str(username).len() > 3 :
+        #    with open(utils.file_name, 'r', newline="") as csvfile:
+        #        reader = csv.reader(csvfile, delimiter=", ")
+        #        for row in reader:
+        #            full_name = row[0]
+        ##            first_name = full_name.split("#")[0]
+        #           if username.lower() == full_name.lower() or username.lower() == first_name.lower():
+        #               user = full_name
+        #               break
+                    
+
+        dates_list, exit_code, message = utils.get_users_dates(user)
         #Mention the user, print the message and if the list is not empty, print it.
         await ctx.send(ctx.author.mention)
         await ctx.send(message)
