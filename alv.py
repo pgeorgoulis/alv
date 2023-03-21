@@ -106,8 +106,7 @@ async def ping(interaction: discord.Interaction):
 @commands.guild_only()
 @commands.is_owner()
 async def cog(interaction: discord.Interaction, action: str, path: str=None):
-    folders = [filename for filename in os.listdir('./cogs')]
-
+    
     if path:
         if path.endswith(".py"):
             path = path[:-3]
