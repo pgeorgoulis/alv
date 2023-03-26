@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 from date import Date
 import asyncio
 import csv
@@ -12,31 +13,19 @@ class Show_and_remove(commands.Cog):
         self.client = client
 
 
-    @commands.command()
-    async def show(self, ctx, username = None):
+    @app_commands.command(name="show", description="Shows the dates from any user")
+    async def show(self, interaction:discord.Interaction, member:discord.Member = None):
 
-        if username == None:
-            user = str(ctx.author)
+        default_user = str(interaction.user)
+
+        if(member == None):
+            user = default_user
         else:
-            for member in ctx.guild.members:
-                if username in str(member).lower():
-                    user = str(member)
-
-        #if str(username).len() > 3 :
-        #    with open(utils.file_name, 'r', newline="") as csvfile:
-        #        reader = csv.reader(csvfile, delimiter=", ")
-        #        for row in reader:
-        #            full_name = row[0]
-        ##            first_name = full_name.split("#")[0]
-        #           if username.lower() == full_name.lower() or username.lower() == first_name.lower():
-        #               user = full_name
-        #               break
-                    
+            user = str(member)
 
         dates_list, exit_code, message = utils.get_users_dates(user)
         #Mention the user, print the message and if the list is not empty, print it.
-        await ctx.send(ctx.author.mention)
-        await ctx.send(message)
+        await interaction.channel.send(message)
 
         #Only if the error code is 0 print the dates. Else, there aren't any dates to print
         final_string = ""
@@ -48,7 +37,7 @@ class Show_and_remove(commands.Cog):
                 temp = str(i)+". "+ date.get_full_date() +"\n"
                 final_string += temp
                 i+=1
-            await ctx.send(final_string)
+            await interaction.response.send_message(final_string)
 
 
     @commands.command()
