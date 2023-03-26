@@ -42,7 +42,7 @@ class Pictures_in_Channel(Cog):
         for pic in reversed(pic_list):
             await thread.send(pic.url)
 
-        await interaction.channel.send(f'{pic_counter} pics found in the last {counter} messages', delete_after = 10)
+        await interaction.response.send_message(f'{pic_counter} pics found in the last {counter} messages', delete_after = 10)
 
 async def setup(client):
     await client.add_cog(Pictures_in_Channel(client))

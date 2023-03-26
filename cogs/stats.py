@@ -90,7 +90,7 @@ class Statistics(Cog):
         embed.add_field(name="Number of entered Dates", value=date_count, inline=False)
         embed.add_field(name="Common Days", value=common_string, inline=False)
 
-        await interaction.channel.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
 async def setup(client):
     await client.add_cog(Statistics(client))

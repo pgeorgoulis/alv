@@ -46,7 +46,7 @@ class Meme(Cog):
         url=random_meme.url
         embed = Embed(title=title, url=url)
         embed.set_image(url=url)
-        await interaction.channel.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
 async def setup(client):
     await client.add_cog(Meme(client))

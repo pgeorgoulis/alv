@@ -38,7 +38,7 @@ class Poll(Cog):
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
 
-        message = await interaction.channel.send(embed=embed)
+        message = await interaction.response.send_message.send(embed=embed)
 
         for emoji in numbers[:len(options)]:
             await message.add_reaction(emoji)
