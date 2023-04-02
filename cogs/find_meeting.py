@@ -1,9 +1,9 @@
 from discord import Embed
 import discord
 from discord.ext import commands
+from discord import app_commands
 from discord.ext.commands import MissingPermissions
 from discord.ext.commands import MissingRequiredArgument
-from requests import get
 import json
 from datetime import datetime
 from date import Date
@@ -15,13 +15,12 @@ class Find_meeting(commands.Cog):
         self.client = client
 
 
-    @commands.command(name = "find_meeting", aliases=["find", "meeting"], pass_context = True)
-    #@commands.has_permissions(administrator=True)   #Raises some subclass CommandError #TODO catch all the admin privilage errors and print the same message (pehaps global exception filter)
-    async def find_meeting(self, ctx, duration = None):
+    @app_commands.command(name = "find_meeting", description="Finds possible meeting times for all the users in the current chat")
+    async def find_meeting(self, interaction=discord.Interaction, duration: int = None):
 
         #Purge the dates from the channel users
         channel_users = []
-        for mem in ctx.channel.members:
+        for mem in interaction.channel.members:
             channel_users.append(str(mem))
         channel_users.remove("Alv#3487")
         utils.purge_dates(channel_users)
@@ -32,7 +31,7 @@ class Find_meeting(commands.Cog):
             user_dates, exit_code, message = utils.get_users_dates(user)
             user_dates = utils.sort_dates(user_dates)
             if exit_code !=0:
-                await ctx.send(message)
+                await interaction.channel.send(message)
                 return    
 
             dictionary = {}
@@ -101,23 +100,21 @@ class Find_meeting(commands.Cog):
                         if time_diffObj.get_hour() >= int(duration):
                             meetings.append(dateObj)
                     else:
-                        await ctx.send("Warning: Given meeting duration is not valid.The command will proceed without a duration value")
+                        await interaction.channel.send("Warning: Given meeting duration is not valid.The command will proceed without a duration value")
                         meetings.append(dateObj)
 
 
-
-
         if len(meetings) == 0:
-            await ctx.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
-            await ctx.invoke(self.client.get_command('meme') )
-            await ctx.send("You could try using the `!oneshot` command to find the date with the most available party members")
+            await interaction.channel.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
+            await interaction.invoke(self.client.get_command('meme') )
+            await interaction.response.send_message("You could try using the `!oneshot` command to find the date with the most available party members")
         else:
-            guild = ctx.guild
+            guild = interaction.guild
             meetings = utils.sort_dates(meetings)
             if len(meetings) == 1:
-                await ctx.send("I found the following date:")
+                await interaction.response.send_message("I found the following date:")
             else:
-                await ctx.send("I found the following dates:")
+                await interaction.response.send_message("I found the following dates:")
             for meeting in meetings:
                 #Get all the fiends needed
                 year = datetime.today().year
@@ -131,16 +128,7 @@ class Find_meeting(commands.Cog):
                 embed.add_field(name="Date", value=string, inline=False)
                 embed.add_field(name="From", value=start, inline=True)
                 embed.add_field(name="Until", value=end, inline=True)
-                await ctx.send(embed=embed)
-
-    @find_meeting.error
-    async def find_meeting_error(self, ctx, error):
-        if isinstance(error, MissingPermissions):
-            await ctx.send("Error: This command is only available to sigma males")
-        elif isinstance(error, MissingRequiredArgument):
-            await ctx.send("Error: find_meeting needs a time duration argument")
-        else:
-            raise error
+                await interaction.channel.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(Find_meeting(client))
