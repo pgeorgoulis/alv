@@ -1,38 +1,37 @@
-from discord.ext.commands import command
-from discord.ext.commands import Cog
+
 from discord import Embed
+from discord import app_commands
+from discord.ext import commands
+from discord.ext.commands import Cog
+import discord
 import utils
+
 
 class Oneshot(Cog):
     def __init__(self, client):
         self.client = client
 
-    @command(name = "oneshot")
-    async def oneshot(self, ctx, dm = None):
-        
-        if dm == None:
-            dm = str(ctx.author)
+    @app_commands.command(name="oneshot", description="Shows how many members are available on each one of the Dm's entered dates.")
+    async def oneshot(self, interaction:discord.Interaction, member:discord.Member = None):
+        #TODO for some reason if member is swiched with Dm, the bot breaks
+        Dm = member
+        default_dm = str(interaction.user)
+
+        if(Dm == None):
+            oneshot_dm = default_dm   
         else:
-            dm_found = False 
-            for member in ctx.guild.members:
-                if dm in str(member).lower():
-                    dm = str(member)
-                    dm_found = True
-                    break
-            if not dm_found:
-                print("in")
-                dm = str(ctx.author)
-                await ctx.send(f'Warning: The dm was not found. Proceeding with user {str(ctx.author)} as a DM instead')
+            oneshot_dm = str(Dm)   
         
         
-        dm_dates, exit_code, exit_message = utils.get_users_dates(dm)
+        dm_dates, exit_code, exit_message = utils.get_users_dates(oneshot_dm)
         if exit_code != 0:
-            await ctx.send(exit_message)
+            #TODO change this to be printed at the top of the final string on the embed. Same goes for the other commands with this logic
+            await interaction.channel
             return
 
         users = []
         #TODO need to add a away for non members to participate and add dates. 
-        for m in ctx.guild.members:
+        for m in interaction.guild.members:
             users.append(str(m))
 
         common_days = []
@@ -59,10 +58,10 @@ class Oneshot(Cog):
             string = string + d.get_full_date() + ":"+ "\t\t"+str(count) +"\n"
         
         embed = Embed(title="One shot availability",description="Number of available party members per DM's entered date", colour=0x87CEEB)
-        embed.add_field(name="Dm", value=str(dm), inline=False)
+        embed.add_field(name="Dm", value=oneshot_dm, inline=False)
         embed.add_field(name="Results", value=string, inline=False)
 
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
 
 
