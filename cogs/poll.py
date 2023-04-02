@@ -26,7 +26,7 @@ class Poll(Cog):
 
 
         allowed_mentions = AllowedMentions(everyone=True)
-        await interaction.response.send_message("@everyone new poll", allowed_mentions=allowed_mentions)
+        await interaction.channel.send("@everyone new poll", allowed_mentions=allowed_mentions)
         embed = Embed(title="Poll",
                         description=question,
                         colour=0xEB459E,
@@ -38,7 +38,7 @@ class Poll(Cog):
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
 
-        message = await interaction.response.send_message.send(embed=embed)
+        message = await interaction.response.send_message(embed=embed)
 
         for emoji in numbers[:len(options)]:
             await message.add_reaction(emoji)
