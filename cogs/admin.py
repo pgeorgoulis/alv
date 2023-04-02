@@ -6,6 +6,16 @@ class Admin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+
+    @commands.is_owner()
+    @commands.guild_only()
+    @commands.command(pass_context=True)
+    async def say(self, ctx, string):
+        string = str(string)
+        await ctx.message.delete()
+        await ctx.send(string)
+
+
     #Alternatively @commands.has_role('RoleName')
     @commands.command(pass_context = True)
     @commands.has_permissions(administrator=True)   #Raises some subclass CommandError
