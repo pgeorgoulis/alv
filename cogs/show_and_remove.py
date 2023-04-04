@@ -72,9 +72,6 @@ class Show_and_remove(commands.Cog):
             user = str(member)
 
         dates_list, exit_code, message = utils.get_users_dates(user)
-        #Mention the user, print the message and if the list is not empty, print it.
-        await interaction.channel.send(message)
-
         #Only if the error code is 0 print the dates. Else, there aren't any dates to print
         final_string = ""
         if exit_code == 0:
@@ -85,7 +82,9 @@ class Show_and_remove(commands.Cog):
                 temp = str(i)+". "+ date.get_full_date() +"\n"
                 final_string += temp
                 i+=1
-            await interaction.response.send_message(final_string)
+            await interaction.response.send_message(message+"\n"+final_string)
+        else:
+            await interaction.response.send_message(message)
 
 
     @app_commands.command(name="remove", description="Choose and remove one or more dates")

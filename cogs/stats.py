@@ -82,7 +82,7 @@ class Statistics(Cog):
             common_string = common_string + common_dates_string
 
         #Create the embed with the stats and send it at the end       
-        embed = Embed(title="Statistics", 
+        embed = Embed(title="Date Info", 
                                 description="Stats about each user's entered dates", 
                                 color =0x0CC10C)        
         embed.add_field(name="First Date", value=first_date, inline=True)
