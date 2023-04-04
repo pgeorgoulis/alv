@@ -263,6 +263,35 @@ def confirm_change(author, date_list):
 
     return found_list, exit_code
 
+#Takes a list of date strings and an author and checks if the dates still exist in the file
+#Returns a string with the get_user_dates exit message if an error occur
+#or
+#a string message containing all the dates and if they were found or not. 
+
+
+def confirm_twice(author:str, deleted_dates) -> str:
+    print_list = []
+
+    users_dates, exit_code, message = get_users_dates(author)
+    if exit_code == 0:
+        for date in deleted_dates:
+            date_exists_flag = False
+            for u_date in users_dates:
+                if date == u_date.get_full_date():
+                    date_exists_flag = True
+                    break
+            if date_exists_flag:
+                print_list.append(f'Error: Date {date} was not deleted')
+            else:
+                print_list.append(f'Date {date} was deleted succesfully')
+        
+        final_str = "\n".join(print_list)
+    else:
+        final_str = message
+
+    print(final_str)
+    return final_str
+
 #write the dates to a csv file
 def writeFile(author, dates):
     lines = list()
