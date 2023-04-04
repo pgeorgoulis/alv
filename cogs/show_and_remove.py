@@ -5,7 +5,52 @@ from date import Date
 import asyncio
 import csv
 import utils
+from discord.ui import Select
+from discord.ui import View
 
+class RemoveDatesDropdown(Select):
+    def __init__(self, options:list[discord.SelectOption], date_count:int):
+        super().__init__(placeholder="Choose one or more dates to be removed", min_values=1, max_values=date_count, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        dates_list = [f"{option.label}" for option in self.options]
+
+        #Remove the dates from the list
+        for date in self.values:
+            dates_list.remove(date)
+
+        #Rewrite the file with the new dates
+        #TODO I may need to rewrite this. It should't be here
+
+        lines = []
+        author = str(interaction.user)
+        dates_list.insert(0, author)
+        with open(utils.get_filename(), 'r', newline="") as csvfile:
+            reader = csv.reader(csvfile, delimiter=",")
+            #Load the whole file in lines list
+            for row in reader:
+                name = row[0]
+                #rows.append(row)
+                if author != name:
+                    lines.append(row)
+                else:
+                    lines.append(dates_list)
+        #Rewrite the new file
+        with open(utils.get_filename(), 'w') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(lines) 
+    
+        self.disabled = True
+        await interaction.response.send_message(f'The initial options were {dates_list}')
+
+class RemoveDatesView(View):
+    def __init__(self, options: list[discord.SelectOption], date_count:int):
+        super().__init__()
+        self.add_item(RemoveDatesDropdown(options=options, date_count=date_count))
+
+    async def on_timeout(self):
+        return await super().on_timeout()
+    
 
 class Show_and_remove(commands.Cog):
 
@@ -40,102 +85,27 @@ class Show_and_remove(commands.Cog):
             await interaction.response.send_message(final_string)
 
 
-    @commands.command()
-    async def remove(self, ctx):
+    @app_commands.command(name="remove", description="Choose and remove one or more dates")
+    async def remove(self, interaction:discord.Interaction):
         #Show the dates to the user
-        #Need to find diffrent aproach instead of copying the show dates code.
-        dates_list, exit_code, message = utils.get_users_dates(str(ctx.author))
+        author = str(interaction.user)
+        dates_list, exit_code, message = utils.get_users_dates(author)
 
-        #Mention the user, print the message and if the list is not empty, print it.
-        await ctx.send(ctx.author.mention)
-        await ctx.send(message)
-
-        #Only if the error code is 0 print the dates. Else, there aren't any dates to print
-        final_string = ""
+        #Only if the error code is 0 print the dates.
         if exit_code == 0:
             #Initialize the counter
             dates_list = utils.sort_dates(dates_list)
-            i=1
+            options = []
+            date_count = 1
             for date in dates_list:
-                temp = str(i)+". "+ date.get_full_date() +"\n"
-                final_string += temp
-                i+=1
-            await ctx.send(final_string)
+                options.append(discord.SelectOption(label=date.get_full_date()))
+            date_count = len(options)
+            await interaction.response.send_message("Select the dates you wish to remove", view=RemoveDatesView(options=options, date_count=date_count), ephemeral=True)
         else:
+            await interaction.response.send_message(message)
             return
 
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel
 
-        try:
-            await ctx.send('Enter the number or numbers of the dates you wish to delete: ')
-            #Read the user input and split it into seperate days
-            msg = await self.client.wait_for("message", check=check, timeout=60)
-            input_list = msg.content.split(",")
-            author = str(msg.author)
-
-            #Sanitize the input
-            sanitized_list = []
-            for entry in input_list:
-                entry = utils.remove_spaces(entry)
-                #If its a number and it exists in the file, add it to the list
-                if utils.is_number(entry):
-                    num = int(entry)
-                    if num <= len(dates_list):
-                        sanitized_list.append(num)
-                    else:
-                        await ctx.send(f'Error: Number {num} does not exist in the list above')
-                else:
-                    await ctx.send(f'Error: Entry {num} not an integer')
-
-            #Find the dates that need to be removed
-            remove_dates = []
-            for number in sanitized_list:
-                remove_dates.append(dates_list[number-1])
-
-            #And remove them
-            for r_date in remove_dates:
-                for date in dates_list:
-                    if r_date.get_full_date() == date.get_full_date():
-                        dates_list.remove(date)
-                        break
-
-            #Write to the file
-            #TODO needs impovement, make this function one the the utils write file function
-            lines = list()
-            with open(utils.get_filename(), 'r', newline="") as csvfile:
-                reader = csv.reader(csvfile, delimiter=",")
-                #Load the whole file in lines list
-                for row in reader:
-                    name = row[0]
-                    #rows.append(row)
-                    if author != name:
-                        lines.append(row)
-                    else:
-                        new_line = []
-                        new_line.append(author)
-                        for date in dates_list:
-                            new_line.append(date.get_full_date())
-                        lines.append(new_line)
-            #Rewrite the new file
-            with open(utils.get_filename(), 'w') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerows(lines)
-
-            #Check if the dates were deleted succesfully
-            found_list, exit_code = utils.confirm_change(author, remove_dates)
-            message_list = []
-            for i in range(len(found_list)):
-                if found_list[i]:
-                    string = f'Error: Date {remove_dates[i].get_full_date()} was not removed'
-                else:
-                    string = f'Date {remove_dates[i].get_full_date()} was removed succesfully'
-                message_list.append(string)
-
-            await ctx.reply('\n'.join(message_list))
-
-        except asyncio.TimeoutError:
-            await ctx.send("Sorry, you didn't reply in time")
 
 
 async def setup(client):
