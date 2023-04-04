@@ -13,12 +13,6 @@ class Pictures_in_Channel(Cog):
     async def pics(self, interaction: discord.Interaction, limit: int= None):
         if limit == None:
             limit = 10000
-        else:
-            if utils.is_number(limit):
-                limit = int(limit)
-            else:
-                await interaction.channel.send("Warning: Given limit value is not valid. The command will proceed with the default limit value")
-                limit = 10000
 
         counter = 0
         pic_counter =0

@@ -116,12 +116,6 @@ def swap(object_one, object_two):
 def remove_spaces(string):
     return string.replace(" ", "")
 
-#Get a string and check if it is made out of digits
-def is_number(string):
-    #one or more numnbers
-    digits = '[0-9]+'
-    result = re.search(digits, string)
-    return result
 #Get a string and check if it matches the date format
 def is_date(string):
     #day = '([1-9]|[0-2][0-9]|30|31|)'

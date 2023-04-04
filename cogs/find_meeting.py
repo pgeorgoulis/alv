@@ -96,8 +96,8 @@ class Find_meeting(commands.Cog):
                     time_diffObj = utils.time_diff(dateObj.get_start_time(), dateObj.get_end_time())
                     if duration == None:
                         meetings.append(dateObj)
-                    elif duration != None and utils.is_number(duration):
-                        if time_diffObj.get_hour() >= int(duration):
+                    elif duration != None:
+                        if time_diffObj.get_hour() >= duration:
                             meetings.append(dateObj)
                     else:
                         await interaction.channel.send("Warning: Given meeting duration is not valid.The command will proceed without a duration value")
