@@ -39,9 +39,11 @@ class RemoveDatesDropdown(Select):
         with open(utils.get_filename(), 'w') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(lines) 
-    
-        self.disabled = True
-        await interaction.response.send_message(f'The initial options were {dates_list}')
+
+        await interaction.response.edit_message(view=None)
+        await interaction.followup.send("test2")
+        if self.view:
+            self._view.stop()
 
 class RemoveDatesView(View):
     def __init__(self, options: list[discord.SelectOption], date_count:int):
