@@ -217,7 +217,7 @@ def get_users_dates(author):
 
         if user_found is True:
             if len(users_line) == 1:
-                message = "Error: User "+author+" has\'t entered any dates."
+                message = "User "+author+" has\'t entered any dates."
                 exit_code = 1
                 return dates_list, exit_code, message
             #If the user is found
@@ -231,7 +231,7 @@ def get_users_dates(author):
                 object = Date(splitted[0], splitted[1], splitted[2])
                 dates_list.append(object)
         else:
-            message = "Error: User "+author+" was not found in the file"
+            message = "User "+author+" was not found in the file"
             exit_code = 2
 
         return dates_list, exit_code, message
@@ -289,7 +289,6 @@ def confirm_twice(author:str, deleted_dates) -> str:
     else:
         final_str = message
 
-    print(final_str)
     return final_str
 
 #write the dates to a csv file
