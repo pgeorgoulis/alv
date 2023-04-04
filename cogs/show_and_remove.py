@@ -41,7 +41,8 @@ class RemoveDatesDropdown(Select):
             writer.writerows(lines) 
 
         await interaction.response.edit_message(view=None)
-        await interaction.followup.send("test2")
+        message = utils.confirm_twice(author, self.values)
+        await interaction.followup.send(message)
         if self.view:
             self._view.stop()
 
