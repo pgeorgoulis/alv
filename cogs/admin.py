@@ -1,3 +1,6 @@
+import os
+import discord
+from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
 
@@ -6,15 +9,15 @@ class Admin(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    def check_if_it_is_me(interaction: discord.Interaction) -> bool:
+        return str(interaction.user.id) == os.getenv('MY_ID')
 
-    @commands.is_owner()
-    @commands.guild_only()
-    @commands.command(pass_context=True)
-    async def say(self, ctx, string):
-        string = str(string)
-        await ctx.message.delete()
-        await ctx.send(string)
-
+    @app_commands.check(check_if_it_is_me)
+    @app_commands.command(name="string")
+    async def say(self, interaction:discord.Interaction, string:str):
+        
+        await interaction.channel.send(string)
+        await interaction.response.send_message("Done", ephemeral=True)
 
     #Alternatively @commands.has_role('RoleName')
     @commands.command(pass_context = True)
