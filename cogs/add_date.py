@@ -139,21 +139,9 @@ class Add_date(commands.Cog):
 
         #Write the dates, check to confirm changes, print the apropriate messages
         utils.writeFile(author, list_to_write)
-        found_list, exit_code = utils.confirm_change(author, list_to_confirm)
-
-        if exit_code == 0:
-            i=0
-            for date in list_to_confirm:
-                if found_list[i]:
-                    string = f'Date {date.get_full_date()} was added succesfully'
-                else:
-                    string = f'Error: Date {date.get_full_date()} was not added. Please try again'
-                message_list.append(string)
-                i+=1
-        else:
-            await interaction.channel.send(f'Error: Error in confirm message')
-        
-        await interaction.response.send_message("\n".join(message_list))
+        message= utils.confirm_add(author, list_to_confirm)
+       
+        await interaction.response.send_message(message)
 
 
 

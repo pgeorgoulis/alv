@@ -234,36 +234,38 @@ def get_users_dates(author):
 #Get a user and a list of date objects. Find if they exist or not in the file
 #Used to confirm add_date and remove_date
 #Could return a boolean list with each element refaring to the date list
-def confirm_change(author, date_list):
+def confirm_add(author, date_list):
     #Call the get users date command.
     users_dates, exit_code, message = get_users_dates(author)
-    found_list = []
+    print_list = []
     #We need the user to exist. So only exit codes 0, 1
     if exit_code == 0:
         #The user was found and he has entered dates.
         for date in date_list:
-            date_found = False
+            date_exists_flag = False
             for u_date in users_dates:
                 if date.get_full_date() == u_date.get_full_date():
-                    date_found = True
-            found_list.append(date_found)
+                    date_exists_flag = True
+                    break
+            if date_exists_flag:
+                print_list.append(f'Date {date.get_full_date()} was added sucessfully')
+            else:
+                print_list.append(f'Error: Date {date.get_full_date()} was not added')
     elif exit_code == 1:
         for date in date_list:
-            found_list.append(False)
+            print_list.append(f'Error: Date {date.get_full_date()} was not added')
     else:
-        pass
-        #The user was not found in the file so return some error code
-        #TODO raise an error here
+        return message
 
-    return found_list, exit_code
+    final_string = "\n".join(print_list)
+    return final_string
 
 #Takes a list of date strings and an author and checks if the dates still exist in the file
 #Returns a string with the get_user_dates exit message if an error occur
 #or
 #a string message containing all the dates and if they were found or not. 
 
-
-def confirm_twice(author:str, deleted_dates) -> str:
+def confirm_remove(author:str, deleted_dates) -> str:
     print_list = []
 
     users_dates, exit_code, message = get_users_dates(author)
