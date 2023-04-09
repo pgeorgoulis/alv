@@ -15,13 +15,13 @@ class Date():
         self.end_time = TimeObj(int(e_list[0]), int(e_list[1]))
 
 
-    def get_day(self):
+    def get_day(self) -> str:
         return self.day
-    def get_month(self):
+    def get_month(self) -> str:
         return self.month
-    def get_start_time(self):
+    def get_start_time(self) -> TimeObj:
         return self.start_time
-    def get_end_time(self):
+    def get_end_time(self) -> TimeObj:
         return self.end_time
-    def get_full_date(self):
+    def get_full_date(self) -> str:
         return self.day+"/"+self.month+"("+self.start_time.time_to_string()+"-"+self.end_time.time_to_string()+")"
