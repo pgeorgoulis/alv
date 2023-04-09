@@ -17,7 +17,7 @@ class Pictures_in_Channel(Cog):
         counter = 0
         pic_counter =0
         pic_list = []
-        await interaction.channel.send("Searching...", delete_after=15)
+        await interaction.response.send_message("Searching...")
         async for message in interaction.channel.history(limit=limit):
             counter += 1
             atm_list = message.attachments
@@ -36,7 +36,7 @@ class Pictures_in_Channel(Cog):
         for pic in reversed(pic_list):
             await thread.send(pic.url)
 
-        await interaction.response.send_message(f'{pic_counter} pics found in the last {counter} messages', delete_after = 10)
+        await interaction.channel.send(f'{pic_counter} pics found in the last {counter} messages', delete_after = 10)
 
 async def setup(client):
     await client.add_cog(Pictures_in_Channel(client))
