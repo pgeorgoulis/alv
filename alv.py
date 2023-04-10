@@ -6,6 +6,7 @@ import discord
 import discord.ext
 from dotenv import load_dotenv
 from discord.ext import commands
+from datetime import datetime
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -17,8 +18,6 @@ client.remove_command('help')
 #Global variables for the file name and size
 
 async def load_extensions():
-    print(os.listdir('./cogs'))
-    print()
     for foldername in os.listdir('./cogs'):
         if foldername == "__pycache__":
             continue
@@ -39,7 +38,9 @@ async def on_ready():
     print(f"discord.py {discord.__version__}\n")
 
     synced = await client.tree.sync()
+    current_time = datetime.now().strftime("%H:%M")
 
+    print("Local time is: "+ current_time)
     print("[+] Alv is running...")
     print("[+] Slash Commands synced: "+ str(len(synced))+" commands")
 
