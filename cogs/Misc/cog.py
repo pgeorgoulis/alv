@@ -27,9 +27,12 @@ class Cogs(Cog):
                 path = path[:-3]
 
             cog_names = []
-            for filename in os.listdir(f'./cogs'):
-                if filename.endswith(".py"):
-                    cog_names.append(filename[:-3])
+            for foldername in os.listdir('./cogs'):
+                if foldername == "-__pycache__":
+                    continue
+                for filename in os.listdir(f'./cogs/{foldername}'):
+                    if filename.endswith(".py"):
+                        cog_names.append(f"{foldername}.{filename[:-3]}")
             
             if path in cog_names:
                 cog_file = f'cogs.{path}'
@@ -51,12 +54,15 @@ class Cogs(Cog):
         else:
             if action == "reload":
                 counter = 0
-                for filename in os.listdir(f'./cogs'):
-                    if filename.endswith(".py"):
-                        counter += 1
-                        file = f'cogs.{filename[:-3]}'
-                        await self.client.unload_extension(file)
-                        await self.client.load_extension(file)
+                for foldername in os.listdir('./cogs'):
+                    if foldername == "__pycache__":
+                        continue
+                    for filename in os.listdir(f'./cogs/{foldername}'):
+                        if filename.endswith(".py"):
+                            counter += 1
+                            file = f'cogs.{foldername}.{filename[:-3]}'
+                            await self.client.unload_extension(file)
+                            await self.client.load_extension(file)
                 await interaction.response.send_message(f'RELOADED: {counter} Cogs')
             elif action == "load" or action == "unload":
                 await interaction.response.send_message("You must provide a valid path in order to use ```load``` or ```unload``` actions")
