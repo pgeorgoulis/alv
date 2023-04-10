@@ -20,6 +20,9 @@ client.remove_command('help')
 
 async def load_extensions():
     for filename in os.listdir('./cogs'):
+        if filename.startswith('help_command.py'):
+            continue
+        #remove the help_command class
         if filename.endswith('.py'):
             await client.load_extension(f"cogs.{filename[:-3]}") #:-3] remove the .py
 

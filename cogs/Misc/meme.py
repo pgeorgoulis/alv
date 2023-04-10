@@ -9,6 +9,11 @@ import os
 
 
 class Meme(Cog):
+    """Sends a meme from the top posts 35 in r/dndmemes from the last week"""
+    
+    COG_EMOJI = "💀"
+
+
     def __init__(self, client):
         self.client = client
 

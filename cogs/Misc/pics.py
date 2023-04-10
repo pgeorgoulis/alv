@@ -5,6 +5,10 @@ import discord
 import utils
 
 class Pictures_in_Channel(Cog):
+    """"Sends all the pictures sent to this chanell in the last 10.000 messages"""
+
+    COG_EMOJI = ":spiral_notepad:"
+
     
     def __init__(self, client):
         self.client = client
