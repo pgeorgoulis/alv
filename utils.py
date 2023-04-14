@@ -332,8 +332,97 @@ def writeFile(author, dates):
         writer.writerows(lines)
         return
 
+#Gets as input a list of user objects
+#Returns a list of date objects that are common in the entered users
+#If the first comparison fails it could end without scanning throughout all the users
+def find_common_days(users_list: list) -> list:
+    formatted_data = []
+    #Format all the user dates in a specific way
+    for user in users_list:
+        user_dates, exit_code, message = get_users_dates(user)
+        user_dates = sort_dates(user_dates)
+        if exit_code !=0:
+            #TODO return some type of message 
+            return     
+        
+        date_dictionary = {}
+        for entry in user_dates:
+            date = entry.get_day()+"/"+entry.get_month()
+            time = tuple()
+            time = (entry.get_start_time().base60(), entry.get_end_time().base60())
 
+            if date in date_dictionary:
+                date_dictionary[date] = date_dictionary.get(date).append(time)
+            else:
+                #Typple of 2 elements inside a time list for that date with possible multiple entries
+                time_list = [time]
+                date_dictionary[date] = time_list
 
+        formatted_data.append(date_dictionary)
+
+    #Now that the dates are formatted, it's easy to find the common ones.
+    common_keys = set(formatted_data[0].keys())
+    for dic in formatted_data[1:]:
+        common_keys.intersection_update(set(dic.keys()))
+
+    for d in formatted_data:
+        for key in list(d.keys()):
+            if key not in common_keys:
+                d.pop(key)
+
+    return common_keys, formatted_data
+
+#Gets as input a list of date objects
+#(Obviously the common_dates function is called first)
+#Returns a list of date objects
+#All the final common date and time objects. Basically what find meeting print
+
+def find_common_times(common_keys: set, formated_dates: list, duration: int):
+    meetings = []
+    for key in common_keys:
+        busy_times_list = []
+        for dic in formated_dates:
+            #find the busy hours
+            time_list = dic.get(key)
+            busy_time = [True] * 1441
+            for (s,e) in time_list:
+                for i in range(s,e):
+                    #All the remaiing True fieds will be unusable busy time slots
+                    busy_time[i] = False
+        #By now, the busy minutes of one day for one user are found. 
+            busy_times_list.append(busy_time)
+
+        
+        #for every users times
+        free_time = [True]*1441
+        for busy_mins in busy_times_list:
+            for i in range(0,1441):
+                if busy_mins[i] is True:
+                    free_time[i] = False
+        openInterval = False
+        beg, end = 0, 0
+        for i, slot in enumerate(free_time):
+            if not openInterval and slot:
+                openInterval = True
+                beg = i
+            elif openInterval and not slot:
+                openInterval = False
+                end = i
+                beg = base60_to_str(beg)
+                end = base60_to_str(end)
+                #Create the meeting date
+                dateObj = Date(key, beg, end)
+                time_diffObj = time_diff(dateObj.get_start_time(), dateObj.get_end_time())
+                if duration == None:
+                    meetings.append(dateObj)
+                elif duration != None:
+                    if time_diffObj.get_hour() >= duration:
+                        meetings.append(dateObj)
+                else:
+                    #await interaction.channel.send("Warning: Given meeting duration is not valid.The command will proceed without a duration value")
+                    meetings.append(dateObj)
+
+    return meetings
 
 #This function gets called every time the find_meeting does.
 #Gets a list of users and removes from the dates.csv file any of their dates that have passed
