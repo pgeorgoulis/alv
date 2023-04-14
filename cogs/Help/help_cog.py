@@ -64,9 +64,11 @@ class MyHelpCommand(commands.MinimalHelpCommand):
         ))
 
         for cog, command_set in self.get_bot_mapping().items():
-            filtered = await self.filter_commands(command_set, sort=True)
-            if not filtered:
-                continue
+            print(f"The cog var: {cog}, The command_set var: {command_set}\n\n")
+            #filtered = await self.filter_commands(command_set, sort=True)
+            #if not filtered:
+                #print(f'The {cog}{command_set} command is not filtered')
+                #continue
             emoji = getattr(cog, "COG_EMOJI", None)
             options.append(discord.SelectOption(
                 label=cog.qualified_name if cog else "No Category",
