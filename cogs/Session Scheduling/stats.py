@@ -21,10 +21,6 @@ class Statistics(Cog):
 
         #purge the dates
         utils.purge_dates(channel_users)
-
-        #channel_users.remove("pr#8877")
-        #channel_users.remove("katiaa#7311")
-        #TODO search for those users  and remove them if they exist
         #Get all the dates from the channel users
      
         last_date = ""
