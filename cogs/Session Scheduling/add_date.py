@@ -138,10 +138,14 @@ class Add_date(commands.Cog):
                 message_list.append(string)
 
         #Write the dates, check to confirm changes, print the apropriate messages
-        utils.writeFile(author, list_to_write)
+        for date in users_dates:
+            list_to_write.append(date.get_full_date())
+        utils.write_dates(author, list_to_write, add_flg=True)
         message= utils.confirm_add(author, list_to_confirm)
-       
-        await interaction.response.send_message(message)
+
+        error_msg = "\n".join(message_list)
+        final_str = message + "\n" +error_msg
+        await interaction.response.send_message(final_str)
 
 
 

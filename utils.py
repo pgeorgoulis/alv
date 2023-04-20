@@ -230,6 +230,32 @@ def get_users_dates(author):
 
         return dates_list, exit_code, message
 
+#Get an author and a list of dates to write into the file. 
+def write_dates(author:str, dates_list:list, add_flg: bool = False):
+    lines = []
+    dates_list.insert(0, author)
+
+    with open(get_filename(), 'r', newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        #Load the whole file in lines list
+        for row in reader:
+            name = row[0]
+            user_found = False
+            if author != name:
+                lines.append(row)
+            else:
+                lines.append(dates_list)
+                user_found = True
+        #If the user does not exist and the function is called from the
+        #add command, add the user and the dates anyway
+        if not user_found and add_flg:
+            lines.append(dates_list)
+
+
+    #Rewrite the new file
+    with open(get_filename(), 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(lines) 
 
 #Get a user and a list of date objects. Find if they exist or not in the file
 #Used to confirm add_date and remove_date
@@ -287,50 +313,9 @@ def confirm_remove(author:str, deleted_dates) -> str:
 
     return final_str
 
-#write the dates to a csv file
-def writeFile(author, dates):
-    lines = list()
-    found_flag=False
-    with open(file_name, 'r', newline="") as csvfile:
-        reader = csv.reader(csvfile, delimiter=",")
-        #Load the whole file in lines list
-        for row in reader:
-            name = row[0]
-            if author != name:
-                #This is not the user we are looking for. Add him to the list
-                lines.append(row)
-            else:
-                #if the user entered multiple dates
-                if type(dates) is list:
-                    #get the line and append it at the end
-                    for string in dates:
-                        row.append(string)
-                    lines.append(row)
-                    found_flag = True
-                    #TODO might need to remove the break
-                    continue
-                else:
-                    print("Error in writeFile. Data type is not list")
 
-        #If the user does not exist already
-        if not found_flag:
-            #then add the new user
-            new_line = []
-            new_line.append(author)
-            if type(dates) is list:
-                #get the line and append it at the end
-                for string in dates:
-                    new_line.append(string)
-            else:
-                #its only one date
-                new_line.append(dates)
-            lines.append(new_line)
+"""Utils for finding dates"""
 
-    #Rewrite the new file
-    with open(file_name, 'w') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(lines)
-        return
 
 #Gets as input a list of user objects
 #Returns a list of date objects that are common in the entered users
