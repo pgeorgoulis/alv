@@ -22,11 +22,9 @@ class Find_meeting(commands.Cog):
         channel_users.remove("Alv#3487")
         utils.purge_dates(channel_users)
 
+        common_keys, formatted_dates = utils.find_common_days(channel_users)
 
-        #TODO GET THE COMMON DATES
-
-        #TODO GET THE COMMON TIMES AND MEETING TIMES
-
+        meetings = utils.find_common_times(common_keys, formatted_dates, duration)
         
         if len(meetings) == 0:
             await interaction.channel.send("Looks like there won't be a session this week. Here is a meme to make you feel better")

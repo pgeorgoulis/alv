@@ -238,9 +238,9 @@ def write_dates(author:str, dates_list:list, add_flg: bool = False):
     with open(get_filename(), 'r', newline="") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         #Load the whole file in lines list
+        user_found = False
         for row in reader:
             name = row[0]
-            user_found = False
             if author != name:
                 lines.append(row)
             else:
@@ -320,16 +320,15 @@ def confirm_remove(author:str, deleted_dates) -> str:
 #Gets as input a list of user objects
 #Returns a list of date objects that are common in the entered users
 #If the first comparison fails it could end without scanning throughout all the users
-def find_common_days(users_list: list) -> list:
+def find_common_days(users_list: list):
     formatted_data = []
     #Format all the user dates in a specific way
     for user in users_list:
         user_dates, exit_code, message = get_users_dates(user)
         user_dates = sort_dates(user_dates)
         if exit_code !=0:
-            #TODO return some type of message 
+            print("Exit code was not 0 inside find_common_days") 
             return     
-        
         date_dictionary = {}
         for entry in user_dates:
             date = entry.get_day()+"/"+entry.get_month()
@@ -337,19 +336,17 @@ def find_common_days(users_list: list) -> list:
             time = (entry.get_start_time().base60(), entry.get_end_time().base60())
 
             if date in date_dictionary:
-                date_dictionary[date] = date_dictionary.get(date).append(time)
+                date_dictionary[date].append(time)
             else:
                 #Typple of 2 elements inside a time list for that date with possible multiple entries
                 time_list = [time]
                 date_dictionary[date] = time_list
-
         formatted_data.append(date_dictionary)
 
     #Now that the dates are formatted, it's easy to find the common ones.
     common_keys = set(formatted_data[0].keys())
     for dic in formatted_data[1:]:
         common_keys.intersection_update(set(dic.keys()))
-
     for d in formatted_data:
         for key in list(d.keys()):
             if key not in common_keys:
@@ -362,9 +359,10 @@ def find_common_days(users_list: list) -> list:
 #Returns a list of date objects
 #All the final common date and time objects. Basically what find meeting print
 
-def find_common_times(common_keys: set, formated_dates: list, duration: int):
+def find_common_times(common_keys: set, formated_dates: list, duration: int = None) -> list:
     meetings = []
     for key in common_keys:
+        print(key)
         busy_times_list = []
         for dic in formated_dates:
             #find the busy hours
@@ -376,7 +374,6 @@ def find_common_times(common_keys: set, formated_dates: list, duration: int):
                     busy_time[i] = False
         #By now, the busy minutes of one day for one user are found. 
             busy_times_list.append(busy_time)
-
         
         #for every users times
         free_time = [True]*1441
@@ -397,16 +394,13 @@ def find_common_times(common_keys: set, formated_dates: list, duration: int):
                 end = base60_to_str(end)
                 #Create the meeting date
                 dateObj = Date(key, beg, end)
+                print(f'The date obj is {dateObj.get_full_date()}')
                 time_diffObj = time_diff(dateObj.get_start_time(), dateObj.get_end_time())
                 if duration == None:
                     meetings.append(dateObj)
-                elif duration != None:
+                else:
                     if time_diffObj.get_hour() >= duration:
                         meetings.append(dateObj)
-                else:
-                    #await interaction.channel.send("Warning: Given meeting duration is not valid.The command will proceed without a duration value")
-                    meetings.append(dateObj)
-
     return meetings
 
 #This function gets called every time the find_meeting does.
