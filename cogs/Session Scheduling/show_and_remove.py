@@ -21,27 +21,12 @@ class RemoveDatesDropdown(Select):
 
         #Rewrite the file with the new dates
         #TODO I may need to rewrite this. It should't be here
-
-        lines = []
         author = str(interaction.user)
-        dates_list.insert(0, author)
-        with open(utils.get_filename(), 'r', newline="") as csvfile:
-            reader = csv.reader(csvfile, delimiter=",")
-            #Load the whole file in lines list
-            for row in reader:
-                name = row[0]
-                #rows.append(row)
-                if author != name:
-                    lines.append(row)
-                else:
-                    lines.append(dates_list)
-        #Rewrite the new file
-        with open(utils.get_filename(), 'w') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerows(lines) 
+        utils.write_dates(author=author, dates_list=dates_list)
 
         await interaction.response.edit_message(view=None)
         message = utils.confirm_remove(author, self.values)
+        
         await interaction.followup.send(message)
         if self.view:
             self._view.stop()
