@@ -19,6 +19,8 @@ class Date():
         return self.day
     def get_month(self) -> str:
         return self.month
+    def get_day_and_month(self) -> str:
+        return self.day+"/"+self.month
     def get_start_time(self) -> TimeObj:
         return self.start_time
     def get_end_time(self) -> TimeObj:
