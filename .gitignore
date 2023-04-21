@@ -11,3 +11,6 @@ pics/spongebob.jpg
 .vscode/
 cogs/test_cog.py
 user.py
+cogs/Help/help_cog.py
+test_help_cog.py
+cogs/Help/help_cog.py
