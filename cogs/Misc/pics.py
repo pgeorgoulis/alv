@@ -61,15 +61,15 @@ class Pictures_in_Channel(Cog):
                         pic_counter += 1
                         pic_list.append(atm)
 
-        thread = await interaction.channel.create_thread(name="Channel images",
+        thread = await interaction.channel.create_thread(name="Channel files",
                                                     auto_archive_duration=60,
                                                     type = discord.ChannelType.public_thread)
-        await thread.send("Behold! My pics.")
+        await thread.send("Behold! My files.")
         i = 0
         for pic in reversed(pic_list):
             await thread.send(pic.url)
 
-        await interaction.channel.send(f'{pic_counter} pics found in the last {counter} messages', delete_after = 10)
+        await interaction.channel.send(f'{pic_counter} files found in the last {counter} messages', delete_after = 10)
 
 async def setup(client):
     await client.add_cog(Pictures_in_Channel(client))
