@@ -27,7 +27,7 @@ class RemoveDatesDropdown(Select):
         await interaction.response.edit_message(view=None)
         message = utils.confirm_remove(author, self.values)
         
-        await interaction.followup.send(message)
+        await interaction.followup.send(message, ephemeral=True)
         if self.view:
             self._view.stop()
 
