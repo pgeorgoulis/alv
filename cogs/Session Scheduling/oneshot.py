@@ -12,8 +12,8 @@ class Oneshot(Cog):
         self.client = client
 
     @app_commands.command(name="oneshot", description="Shows how many members are available on each one of the Dm's entered dates.")
-    async def oneshot(self, interaction:discord.Interaction, member:discord.Member = None):
-        #TODO for some reason if member is swiched with Dm, the bot breaks
+    async def oneshot(self, interaction:discord.Interaction, member:discord.Member = None, duration: int = 4 ):
+        #for some reason if member is swiched with Dm, the bot breaks
         Dm = member
         default_dm = str(interaction.user)
 
@@ -22,30 +22,26 @@ class Oneshot(Cog):
         else:
             oneshot_dm = str(Dm)   
         
-        
         dm_dates, exit_code, exit_message = utils.get_users_dates(oneshot_dm)
         if exit_code != 0:
-            #TODO change this to be printed at the top of the final string on the embed. Same goes for the other commands with this logic
-            await interaction.channel
+            await interaction.channel.send(exit_message)
             return
 
-        users = []
-        #TODO need to add a away for non members to participate and add dates. 
-        for m in interaction.guild.members:
-            users.append(str(m))
+        users = utils.get_users_from_file()
 
         common_days = []
         for date_obj in dm_dates:
-            dm_date = date_obj.get_day()+"/"+date_obj.get_month()
+            dm_date = date_obj.get_day_and_month()
             date_counter = 0
             for user in users:
                 #find in users dates the current date and see if they have it in common. 
                 user_dates, e_code, e_message = utils.get_users_dates(user)
                 if e_code == 0:
                     for u_date_obj in user_dates:
-                        u_date = u_date_obj.get_day()+"/"+u_date_obj.get_month()
+                        u_date = u_date_obj.get_day_and_month()
                         if u_date == dm_date:
-                            date_counter = date_counter + 1
+                            #TODO
+                            #FIXME If two same dates exist it will accept only the first one
                             break
             common_days.append((date_obj, date_counter))
        
