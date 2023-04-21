@@ -163,7 +163,11 @@ def is_date(string):
 
     return valid_date, time_is_word, day_is_word
 
+
+
 """Tools for files"""
+
+
 #Counts the lines of a file
 def file_lines():
     with open(file_name, 'r') as file:
