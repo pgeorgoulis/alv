@@ -48,14 +48,22 @@ async def on_ready():
 async def on_interaction(interaction):
     author = interaction.user
     date_called = datetime.today().strftime("%d/%m/%Y, %H:%M:%S")
-    command = interaction.command.name
+    inter = interaction.command.name
 
-    string = f'\nCOMMAND\t\t {command} \t\twas called at \t\t <{date_called}> \t\t by AUTHOR: \t\t{author}'
+    string = f'\nINTERACTION\t\t {inter:<15} was called at \t\t <{date_called}> \t\t by AUTHOR: \t\t {author}'
     file = open("logs.txt", "a")
     file.write(string)
     file.close()
 
-
+@client.event
+async def on_command(ctx):
+    author = ctx.author
+    date_called = datetime.today().strftime("%d/%m/%Y, %H:%M:%S")
+    comm = ctx.command.name
+    string = f"\nCOMMAND \t\t {comm:<15} was called at \t\t <{date_called}> \t\t by AUTHOR: \t\t {author}"
+    file = open("logs.txt", "a")
+    file.write(string)
+    file.close()
 
 @client.event
 async def on_command_error(ctx, error):
