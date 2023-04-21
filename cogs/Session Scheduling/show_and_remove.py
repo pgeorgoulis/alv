@@ -67,9 +67,9 @@ class Show_and_remove(commands.Cog):
                 temp = str(i)+". "+ date.get_full_date() +"\n"
                 final_string += temp
                 i+=1
-            await interaction.response.send_message(message+"\n"+final_string)
+            await interaction.response.send_message(message+"\n"+final_string, ephemeral=True)
         else:
-            await interaction.response.send_message(message)
+            await interaction.response.send_message(message, ephemeral=True)
 
 
     @app_commands.command(name="remove", description="Choose and remove one or more dates")
@@ -89,7 +89,7 @@ class Show_and_remove(commands.Cog):
             date_count = len(options)
             await interaction.response.send_message("Select the dates you wish to remove", view=RemoveDatesView(options=options, date_count=date_count), ephemeral=True)
         else:
-            await interaction.response.send_message(message)
+            await interaction.response.send_message(message, ephemeral=True)
             return
 
 

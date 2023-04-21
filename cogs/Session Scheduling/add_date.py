@@ -145,7 +145,7 @@ class Add_date(commands.Cog):
 
         error_msg = "\n".join(message_list)
         final_str = message + "\n" +error_msg
-        await interaction.response.send_message(final_str)
+        await interaction.response.send_message(final_str, ephemeral=True)
 
 
 
