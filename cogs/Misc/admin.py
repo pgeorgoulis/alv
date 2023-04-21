@@ -1,3 +1,4 @@
+import utils
 import os
 import discord
 from discord import app_commands
@@ -18,6 +19,20 @@ class Admin(commands.Cog):
         
         await interaction.channel.send(string)
         await interaction.response.send_message("Done", ephemeral=True)
+    
+    @app_commands.check(check_if_it_is_me)
+    @app_commands.command(name="get_logs", description="Get the last \'limit\'logs from the file. Default limit value is 50")
+    async def get_logs(self, interaction: discord.Interaction, limit: int = 20):
+        lines = []
+        with open("logs.txt", 'r') as file:
+            lines = file.readlines()
+        if len(lines) < limit:
+            string = f"Warning: There are only {len(lines)} entries in the log file\n\n"
+        else:
+            string = f"Here are the last {limit} entries in the file\n\n"    
+        file_content = "".join(lines[:limit])
+        final_str = string + file_content
+        await interaction.response.send_message(final_str, ephemeral=True)
 
     #Alternatively @commands.has_role('RoleName')
     @commands.command(pass_context = True)
