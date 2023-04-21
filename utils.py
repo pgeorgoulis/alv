@@ -257,6 +257,15 @@ def write_dates(author:str, dates_list:list, add_flg: bool = False):
         writer = csv.writer(csvfile)
         writer.writerows(lines) 
 
+def get_users_from_file()->list:
+    users = []
+    with open(get_filename(), 'r', newline="") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        for row in reader:
+            name = row[0]
+            users.append(name)
+
+    return users
 #Get a user and a list of date objects. Find if they exist or not in the file
 #Used to confirm add_date and remove_date
 #Could return a boolean list with each element refaring to the date list
