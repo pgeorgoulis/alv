@@ -22,7 +22,7 @@ class Admin(commands.Cog):
     
     @app_commands.check(check_if_it_is_me)
     @app_commands.command(name="get_logs", description="Get the last \'limit\'logs from the file. Default limit value is 50")
-    async def get_logs(self, interaction: discord.Interaction, limit: int = 20):
+    async def get_logs(self, interaction: discord.Interaction, limit: int = 5, get_whole_file: bool = False):
         lines = []
         with open("logs.txt", 'r') as file:
             lines = file.readlines()
@@ -30,9 +30,12 @@ class Admin(commands.Cog):
             string = f"Warning: There are only {len(lines)} entries in the log file\n\n"
         else:
             string = f"Here are the last {limit} entries in the file\n\n"    
-        file_content = "".join(lines[:limit])
+        file_content = "".join(lines[-limit:])
         final_str = string + file_content
         await interaction.response.send_message(final_str, ephemeral=True)
+        if get_whole_file: 
+            with open("logs.txt", 'rb') as fp:
+                await interaction.followup.send(file=discord.File(fp, 'logs.txt'), ephemeral=True)
 
     #Alternatively @commands.has_role('RoleName')
     @commands.command(pass_context = True)
