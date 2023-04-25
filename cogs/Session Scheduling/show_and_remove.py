@@ -20,7 +20,6 @@ class RemoveDatesDropdown(Select):
             dates_list.remove(date)
 
         #Rewrite the file with the new dates
-        #TODO I may need to rewrite this. It should't be here
         author = str(interaction.user)
         utils.write_dates(author=author, dates_list=dates_list)
 
@@ -30,7 +29,7 @@ class RemoveDatesDropdown(Select):
         await interaction.followup.send(message, ephemeral=True)
         if self.view:
             self._view.stop()
-
+        
 class RemoveDatesView(View):
     def __init__(self, options: list[discord.SelectOption], date_count:int):
         super().__init__()

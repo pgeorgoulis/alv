@@ -48,12 +48,17 @@ async def on_ready():
 async def on_interaction(interaction):
     author = interaction.user
     date_called = datetime.today().strftime("%d/%m/%Y, %H:%M:%S")
-    inter = interaction.command.name
-
-    string = f'\nINTERACTION\t\t {inter:<15} was called at \t\t <{date_called}> \t\t by AUTHOR: \t\t {author}'
-    file = open("logs.txt", "a")
-    file.write(string)
-    file.close()
+    try:
+        #If no command name is found
+        inter = interaction.command.name
+    except Exception as e:
+        #TODO log the failed interaction
+        pass
+    else:
+        string = f'\nINTERACTION\t\t {inter:<15} was called at \t\t <{date_called}> \t\t by AUTHOR: \t\t {author}'
+        file = open("logs.txt", "a")
+        file.write(string)
+        file.close()
 
 @client.event
 async def on_command(ctx):
