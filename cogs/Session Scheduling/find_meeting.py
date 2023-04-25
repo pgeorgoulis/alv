@@ -1,3 +1,4 @@
+import os
 import utils
 import discord
 from discord import Embed
@@ -21,15 +22,20 @@ class Find_meeting(commands.Cog):
             channel_users.append(str(mem))
         channel_users.remove("Alv#3487")
         utils.purge_dates(channel_users)
-
-        common_keys, formatted_dates = utils.find_common_days(channel_users)
+        try:
+            common_keys, formatted_dates = utils.find_common_days(channel_users)
+        except Exception as e:
+            await interaction.response.send_message(e)
+            return
 
         meetings = utils.find_common_times(common_keys, formatted_dates, duration)
         
         if len(meetings) == 0:
-            await interaction.channel.send("Looks like there won't be a session this week. Here is a meme to make you feel better")
-            await interaction.invoke(self.client.get_command('meme') )
-            await interaction.response.send_message("You could try using the `!oneshot` command to find the date with the most available party members")
+            dir = os.path.dirname(os.path.realpath('__file__'))
+            pic_path = "/home/porf/Desktop/alv/alv/pics/no_session_.jpg"
+            with open(pic_path, 'rb') as f:
+                picture = discord.File(f)
+                await interaction.response.send_message(file=picture)
         else:
             guild = interaction.guild
             meetings = utils.sort_dates(meetings)
