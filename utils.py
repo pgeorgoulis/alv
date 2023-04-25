@@ -340,8 +340,7 @@ def find_common_days(users_list: list):
         user_dates, exit_code, message = get_users_dates(user)
         user_dates = sort_dates(user_dates)
         if exit_code !=0:
-            print("Exit code was not 0 inside find_common_days") 
-            return     
+            raise Exception(message) 
         date_dictionary = {}
         for entry in user_dates:
             date = entry.get_day()+"/"+entry.get_month()
