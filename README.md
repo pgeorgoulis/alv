@@ -9,5 +9,5 @@ Alv is a discord bot made with the library discord.py. It's main functionality i
 Project is created with:
 * Python 3.10.6
 * Discord.py version: 2.1.0
-* asyncpraw version: 
+* asyncpraw version: 7.7.0
 	
