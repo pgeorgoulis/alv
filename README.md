@@ -16,7 +16,7 @@ Project is created with:
 
 ## Setup
 Just like any other discord bot, install the needed libraries and run the main file with:
-$./alv.py
+$ python3 alv.py
 
 For this bot to run, your discord and your asyncpraw (Reddit) token are required.
 
